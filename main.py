@@ -5,7 +5,7 @@ global recipes
 
 def main():
     recipes = load_recipes()
-    print('WELCOME TO YOUR RECIPE BOOK')
+    print('WELCOME TO YOUR RECIPE BOOK!')
 
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
