@@ -17,7 +17,7 @@ Please enter your desired option
     """)
         user_input = get_number_input(0, 2)
         if user_input == 0:
-            print('Bye!')
+            print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
             recipe_search()
