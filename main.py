@@ -132,3 +132,10 @@ def create_recipe():
 
 
 main()
+
+# TODO: Add Update functionality
+# 1. Add update option to main menu
+# 2. IF user decides to update, they can search for a recipe
+# 3. Upon selecting a recipe the recipe is displayed to them
+# 4. User decides if they want to add, or update something in the recipe
+# 5. We add or update based on the user input
