@@ -13,7 +13,7 @@ def main():
 Please enter your desired option
 0. Exit
 1. Search for a Recipe
-2. Add a New Reipe
+2. Add a New Recipe
     """)
         user_input = get_number_input(0, 2)
         if user_input == 0:
