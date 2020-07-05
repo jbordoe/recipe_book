@@ -1,9 +1,10 @@
 import json
 
 global recipes
-
+global selected_recipe
 
 def main():
+    global recipes
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
@@ -14,8 +15,9 @@ Please enter your desired option
 0. Exit
 1. Search for a Recipe
 2. Add a New Recipe
+3. Make changes to existing Recipe (Update)
     """)
-        user_input = get_number_input(0, 2)
+        user_input = get_number_input(0, 3)
         if user_input == 0:
             print('Thanks for your time. Bye!')
             break
@@ -25,6 +27,8 @@ Please enter your desired option
             new_recipe = create_recipe()
             recipes.append(new_recipe)
             save_recipes(recipes)
+        elif user_input == 3:
+            update_recipe()
 
 
 # convert python data structure into JSON string
@@ -55,8 +59,55 @@ def get_number_input(min, max):
         except ValueError:
             print('You did not enter a number.')
 
+def yes_no(text):
+    name_answer = input(text).lower()
+    yes_or_no = ['y', 'yes', 'no', 'n']
+    while name_answer not in yes_or_no:
+        print('Please input yes(y) or no(n)')
+        name_answer = input('y/n: ').lower()
+        print(name_answer)
+    if name_answer == 'no' or name_answer == 'n':
+        return False
+    elif name_answer == 'yes' or name_answer == 'y':
+        return True
+
+def find_recipe():
+    global selected_recipe
+    global recipes
+    while True:
+        query = input('Enter your search term: ')
+
+        matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
+
+        print(f'Found {len(matches)} match(es)!')
+
+        if len(matches) == 0:
+            if yes_no('Do you want to try a new search? '):
+                continue
+            else:
+                return False
+
+
+        names = list(map(lambda x: x['name'], matches))
+
+        print('0. Return to Main Menu')
+        for i, name in enumerate(names):
+            print(f'{i + 1}. {name}\n')
+
+        print('Enter a number related to the food (match) you are interested: ')
+        num_input = get_number_input(0, len(matches))
+        if num_input == 0:
+            'Returning to main menu'
+            return False
+        else:
+            selected_recipe = matches[num_input - 1]
+
+            print(f'These are the details of your choice:')
+            display_recipe(selected_recipe)
+            return True
 
 def recipe_search():
+    global recipes
     while True:
         query = input('Enter your search term: ')
 
@@ -87,8 +138,8 @@ def display_recipe(recipe):
     print(f'How to cook {recipe_name}')
     print('Ingredients:')
     for ingredient in recipe['ingredients']:
-        name = ingredient['name']
-        amount = ingredient['amount']
+        name = ingredient[0]
+        amount = ingredient[1]
         print(f'  {name}, {amount}')
     print('Instructions:')
     step_n = 1
@@ -129,6 +180,25 @@ def create_recipe():
     recipe['instructions'] = instructions
 
     return recipe
+
+def update_recipe():
+    global selected_recipe
+    global recipes
+    result = find_recipe()
+    if result:
+        name_answer = yes_no("""Do you want to make changes to the name of the food you selected?
+        \nPlease input Yes(y) or No(n): """)
+        if not name_answer:
+            print(f"Great the food name: {selected_recipe['name']} is maintained!")
+        else:
+            update_name = input('Enter a new name for the food you are updating:\n')
+            selected_recipe['name'] = update_name
+    else:
+        print('Returning to Main Menu')
+
+
+
+
 
 
 main()
