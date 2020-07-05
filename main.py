@@ -181,6 +181,34 @@ def create_recipe():
 
     return recipe
 
+def update_recipe_instructions():
+    global selected_recipe
+    while True:
+        print("""
+    Please enter your desired option
+    0. Done
+    1. Add to existing instructions
+    2. Update
+    3. Delete
+        """)
+        user_input = get_number_input(0, 3)
+        instructions = selected_recipe['instructions']
+        if user_input == 0:
+            break
+        elif user_input == 1:
+            break
+        elif user_input == 2:
+            break
+        elif user_input == 3:
+            print('Enter the number of the instruction you want to delete:\n')
+            delete_num = get_number_input(1, len(instructions))
+            del instructions[delete_num - 1]
+            print('Instruction Deleted!')
+            #TODO
+            #Handle the case when the instruction is empty
+
+
+
 def update_recipe():
     global selected_recipe
     global recipes
@@ -193,6 +221,16 @@ def update_recipe():
         else:
             update_name = input('Enter a new name for the food you are updating:\n')
             selected_recipe['name'] = update_name
+
+        instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
+        \nPlease input Yes(y) or No(n): """)
+        if not instruction_answer:
+            print(f"Great! The instruction are  maintained!")
+        else:
+            update_recipe_instructions()
+        save_recipes(recipes)
+    #TODO
+    #Show the updated recipe (selected_recipe)
     else:
         print('Returning to Main Menu')
 
