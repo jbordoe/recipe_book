@@ -201,7 +201,11 @@ def update_recipe_instructions():
             instructions.insert(position_instruction - 1, add_instruction)
             break
         elif user_input == 2:
-            
+            print('Enter the number of the instruction you want to edit:\n')
+            edit_instruction_num = get_number_input(1, len(instructions))
+            edit_instruction = input('Re-enter the instruction here to edit:\n')
+            del instructions[edit_instruction_num - 1]
+            instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
         elif user_input == 3:
             print('Enter the number of the instruction you want to delete:\n')
