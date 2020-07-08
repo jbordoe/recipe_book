@@ -196,16 +196,19 @@ def update_recipe_instructions():
         if user_input == 0:
             break
         elif user_input == 1:
+            add_instruction = input('Enter the instruction and the preferred position of this instruction below:\n')
+            position_instruction = int(input('Enter the number related to the instruction: '))
+            instructions.insert(position_instruction - 1, add_instruction)
             break
         elif user_input == 2:
+            
             break
         elif user_input == 3:
             print('Enter the number of the instruction you want to delete:\n')
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-            #TODO
-            #Handle the case when the instruction is empty
+            #TODO Handle the case when the instruction is empty
 
 
 
@@ -229,8 +232,7 @@ def update_recipe():
         else:
             update_recipe_instructions()
         save_recipes(recipes)
-    #TODO
-    #Show the updated recipe (selected_recipe)
+    #TODO Show the updated recipe (selected_recipe)
     else:
         print('Returning to Main Menu')
 
@@ -247,3 +249,9 @@ main()
 # 3. Upon selecting a recipe the recipe is displayed to them
 # 4. User decides if they want to add, or update something in the recipe
 # 5. We add or update based on the user input
+
+# TODO
+# 1. Add an instruction(user should be able to type an instruction and update on their preferred position in the instruction list)
+# 2. Edit an instruciton(same number of instruction but individual instructions can be edited)
+# 3. Do 1, 2, and delete to ingredients
+# 4. Deleting Recipes
