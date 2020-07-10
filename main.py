@@ -16,8 +16,9 @@ Please enter your desired option
 1. Search for a Recipe
 2. Add a New Recipe
 3. Make changes to existing Recipe (Update)
+4. Delete Recipe
     """)
-        user_input = get_number_input(0, 3)
+        user_input = get_number_input(0, 4)
         if user_input == 0:
             print('Thanks for your time. Bye!')
             break
@@ -29,8 +30,8 @@ Please enter your desired option
             save_recipes(recipes)
         elif user_input == 3:
             update_recipe()
-
-
+        elif user_input == 4:
+            delete_recipe()
 # convert python data structure into JSON string
 
 def save_recipes(recipes):
@@ -155,12 +156,12 @@ def create_recipe():
 
     ingredients = []
     while True:
-        ingredient_name = input('Please Enter Name of Ingredient, or "done" if you are finished: ')
+        ingredient_name = input('Please Enter Name of Ingredient, or "done" if you are finished:\n')
         if ingredient_name == 'done':
             print(ingredients)
             break
         else:
-            ingredient_amount = input(f'Please Enter Amount of {ingredient_name}')
+            ingredient_amount = input(f'Please Enter Amount of {ingredient_name}:\n')
             ingredient = {
                 'name': ingredient_name,
                 'amount': ingredient_amount
@@ -171,7 +172,7 @@ def create_recipe():
 
     instructions = []
     while True:
-        instruction = input(f'Please Enter Instruction {len(instructions) + 1}, or "done" if you are finished: ')
+        instruction = input(f'Please Enter Instruction {len(instructions) + 1}, or "done" if you are finished:\n')
         if instruction == 'done':
             print(instructions)
             break
@@ -197,7 +198,7 @@ def update_recipe_instructions():
             break
         elif user_input == 1:
             add_instruction = input('Enter the instruction and the preferred position of this instruction below:\n')
-            position_instruction = int(input('Enter the number related to the instruction: '))
+            position_instruction = int(input('Enter the number related to the instruction:\n'))
             instructions.insert(position_instruction - 1, add_instruction)
             break
         elif user_input == 2:
@@ -214,6 +215,41 @@ def update_recipe_instructions():
             print('Instruction Deleted!')
             #TODO Handle the case when the instruction is empty
 
+def update_recipe_ingredients():
+    global selected_recipe
+
+    while True:
+        print("""
+    Please enter your desired option
+    0. Done
+    1. Add to existing ingredients
+    2. Update
+    3. Delete
+        """)
+        user_input = get_number_input(0, 3)
+        ingredient = selected_recipe['ingredients']
+        if user_input == 0:
+            break
+        elif user_input == 1:
+            add_ingredients = input('Enter the name of the ingredients:\n')
+            amount_ingredients = input('Enter the amount of ingredient:\n')
+            add_amt_ingredient = add_ingredients, amount_ingredients
+            ingredient.append(add_amt_ingredient)
+            break
+        elif user_input == 2:
+            print('Enter the number of the ingredient you want to edit:\n')
+            edit_ingredients_num = get_number_input(1, len(ingredient))
+            add_ingredients = input('Enter the name of the ingredients:\n')
+            amount_ingredients = input('Enter the amount of ingredient:\n')
+            add_amt_ingredient = add_ingredients, amount_ingredients
+            del ingredient[edit_ingredients_num - 1]
+            ingredient.append(add_amt_ingredient)
+            break
+        elif user_input == 3:
+            print('Enter the number of the ingredient you want to delete:\n')
+            del_num = get_number_input(1, len(ingredient))
+            del ingredient[del_num - 1]
+            print('ingredients Deleted!')
 
 
 def update_recipe():
@@ -236,12 +272,30 @@ def update_recipe():
         else:
             update_recipe_instructions()
         save_recipes(recipes)
+        ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
+                \nPlease input Yes(y) or No(n): """)
+        if not ingredient_answer:
+            print(f"Great! The ingredients are  maintained!")
+        else:
+            update_recipe_ingredients()
+        save_recipes(recipes)
     #TODO Show the updated recipe (selected_recipe)
     else:
         print('Returning to Main Menu')
 
 
-
+def delete_recipe():
+    global selected_recipe
+    global recipes
+    result = find_recipe()
+    delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
+    \nPlease input Yes(y) or No(n): """)
+    if not delete_answer:
+        print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
+    else:
+        del selected_recipe
+    save_recipes(recipes)
+    print('Recipe Deleted!')
 
 
 
@@ -256,6 +310,8 @@ main()
 
 # TODO
 # 1. Add an instruction(user should be able to type an instruction and update on their preferred position in the instruction list)
-# 2. Edit an instruciton(same number of instruction but individual instructions can be edited)
+# 2. Edit an instruction(same number of instruction but individual instructions can be edited)
 # 3. Do 1, 2, and delete to ingredients
 # 4. Deleting Recipes
+
+#Done with
