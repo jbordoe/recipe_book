@@ -293,7 +293,7 @@ def delete_recipe():
     if not delete_answer:
         print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
     else:
-        del selected_recipe
+        recipes.remove(selected_recipe)
     save_recipes(recipes)
     print('Recipe Deleted!')
 
