@@ -3,6 +3,7 @@ import json
 global recipes
 global selected_recipe
 
+
 def main():
     global recipes
     recipes = load_recipes()
@@ -32,6 +33,8 @@ Please enter your desired option
             update_recipe()
         elif user_input == 4:
             delete_recipe()
+
+
 # convert python data structure into JSON string
 
 def save_recipes(recipes):
@@ -60,6 +63,7 @@ def get_number_input(min, max):
         except ValueError:
             print('You did not enter a number.')
 
+
 def yes_no(text):
     name_answer = input(text).lower()
     yes_or_no = ['y', 'yes', 'no', 'n']
@@ -71,6 +75,7 @@ def yes_no(text):
         return False
     elif name_answer == 'yes' or name_answer == 'y':
         return True
+
 
 def find_recipe():
     global selected_recipe
@@ -87,7 +92,6 @@ def find_recipe():
                 continue
             else:
                 return False
-
 
         names = list(map(lambda x: x['name'], matches))
 
@@ -106,6 +110,7 @@ def find_recipe():
             print(f'These are the details of your choice:')
             display_recipe(selected_recipe)
             return True
+
 
 def recipe_search():
     global recipes
@@ -151,7 +156,7 @@ def display_recipe(recipe):
 
 def create_recipe():
     recipe = {}
-    name_food = input('What food do you want to add to the recipe book?'.capitalize())
+    name_food = input('What food do you want to add to the recipe book?\n'.capitalize())
     recipe['name'] = name_food
 
     ingredients = []
@@ -162,10 +167,7 @@ def create_recipe():
             break
         else:
             ingredient_amount = input(f'Please Enter Amount of {ingredient_name}:\n')
-            ingredient = {
-                'name': ingredient_name,
-                'amount': ingredient_amount
-            }
+            ingredient = ingredient_name, ingredient_amount
             ingredients.append(ingredient)
             print(f'Added {ingredient_name}, {ingredient_amount}')
     recipe['ingredients'] = ingredients
@@ -181,6 +183,7 @@ def create_recipe():
     recipe['instructions'] = instructions
 
     return recipe
+
 
 def update_recipe_instructions():
     global selected_recipe
@@ -213,7 +216,8 @@ def update_recipe_instructions():
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-            #TODO Handle the case when the instruction is empty
+            # TODO Handle the case when the instruction is empty
+
 
 def update_recipe_ingredients():
     global selected_recipe
@@ -239,10 +243,10 @@ def update_recipe_ingredients():
         elif user_input == 2:
             print('Enter the number of the ingredient you want to edit:\n')
             edit_ingredients_num = get_number_input(1, len(ingredient))
+            del ingredient[edit_ingredients_num - 1]
             add_ingredients = input('Enter the name of the ingredients:\n')
             amount_ingredients = input('Enter the amount of ingredient:\n')
             add_amt_ingredient = add_ingredients, amount_ingredients
-            del ingredient[edit_ingredients_num - 1]
             ingredient.append(add_amt_ingredient)
             break
         elif user_input == 3:
@@ -279,7 +283,7 @@ def update_recipe():
         else:
             update_recipe_ingredients()
         save_recipes(recipes)
-    #TODO Show the updated recipe (selected_recipe)
+    # TODO Show the updated recipe (selected_recipe)
     else:
         print('Returning to Main Menu')
 
@@ -287,7 +291,7 @@ def update_recipe():
 def delete_recipe():
     global selected_recipe
     global recipes
-    result = find_recipe()
+    find_recipe()
     delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
     \nPlease input Yes(y) or No(n): """)
     if not delete_answer:
@@ -296,7 +300,6 @@ def delete_recipe():
         recipes.remove(selected_recipe)
     save_recipes(recipes)
     print('Recipe Deleted!')
-
 
 
 main()
@@ -314,4 +317,6 @@ main()
 # 3. Do 1, 2, and delete to ingredients
 # 4. Deleting Recipes
 
-#Done with
+# The chnaged the position of line 242 (for the del ingredient while updating)
+# ask: Should the ingredients be numbered to allow users to specify them like we did with the instructions
+# or just ask them to count them selves starting from 1
