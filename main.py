@@ -219,6 +219,20 @@ def update_recipe_instructions():
             # TODO Handle the case when the instruction is empty
 
 
+def add_ingredients():
+    global selected_recipe
+    ingredients = selected_recipe['ingredients']
+    while True:
+        add_ingredient = input('Enter the name of the ingredients:\n')
+        amount_ingredients = input('Enter the amount of ingredient:\n')
+        add_amt_ingredient = add_ingredient, amount_ingredients
+        ingredients.append(add_amt_ingredient)
+        print('Added Ingredients')
+        ingre_ans = yes_no("""Do you want to add another ingredient?
+                        \nPlease input Yes(y) or No(n): """)
+        if not ingre_ans:
+            break
+
 def update_recipe_ingredients():
     global selected_recipe
 
@@ -235,25 +249,22 @@ def update_recipe_ingredients():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_ingredients = input('Enter the name of the ingredients:\n')
-            amount_ingredients = input('Enter the amount of ingredient:\n')
-            add_amt_ingredient = add_ingredients, amount_ingredients
-            ingredient.append(add_amt_ingredient)
+            add_ingredients()
             break
         elif user_input == 2:
             print('Enter the number of the ingredient you want to edit:\n')
             edit_ingredients_num = get_number_input(1, len(ingredient))
             del ingredient[edit_ingredients_num - 1]
-            add_ingredients = input('Enter the name of the ingredients:\n')
+            new_ingredients = input('Enter the name of the ingredients:\n')
             amount_ingredients = input('Enter the amount of ingredient:\n')
-            add_amt_ingredient = add_ingredients, amount_ingredients
+            add_amt_ingredient = new_ingredients, amount_ingredients
             ingredient.append(add_amt_ingredient)
             break
         elif user_input == 3:
             print('Enter the number of the ingredient you want to delete:\n')
             del_num = get_number_input(1, len(ingredient))
             del ingredient[del_num - 1]
-            print('ingredients Deleted!')
+            print('Ingredients Deleted!')
 
 
 def update_recipe():
@@ -266,8 +277,12 @@ def update_recipe():
         if not name_answer:
             print(f"Great the food name: {selected_recipe['name']} is maintained!")
         else:
-            update_name = input('Enter a new name for the food you are updating:\n')
-            selected_recipe['name'] = update_name
+            update_name = input('Enter a new name for the food you are updating:\n').strip()
+            if update_name == '':
+                print('Great! The name is unchanged')
+            else:
+                selected_recipe['name'] = update_name
+                print('The recipe name has been changed')
 
         instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
         \nPlease input Yes(y) or No(n): """)
@@ -306,7 +321,6 @@ main()
 
 #TODO: Empty string input should not update (cancel)
 #TODO: Empty input for number breaks
-#TODO: Enable adding multiple ingredients
 #TODO: Enable adding multiple instructions
 #TODO: Display new recipe after update
 #TODO: Enable cancelling search with empty string
