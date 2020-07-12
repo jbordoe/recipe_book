@@ -82,7 +82,6 @@ def find_recipe():
     global recipes
     while True:
         query = input('Enter your search term: ')
-
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
         print(f'Found {len(matches)} match(es)!')
@@ -115,7 +114,10 @@ def find_recipe():
 def recipe_search():
     global recipes
     while True:
-        query = input('Enter your search term: ')
+        query = input('Enter your search term: ').strip()
+        if query == '':
+            print('Search canceled')
+            break
 
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
@@ -344,4 +346,3 @@ main()
 
 #TODO: Empty string input should not update (cancel)
 #TODO:
-#TODO: Enable cancelling search with empty string
