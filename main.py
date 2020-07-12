@@ -321,7 +321,7 @@ def update_recipe():
         else:
             update_recipe_ingredients()
         save_recipes(recipes)
-    # TODO Show the updated recipe (selected_recipe)
+        display_recipe(selected_recipe)
     else:
         print('Returning to Main Menu')
 
@@ -343,6 +343,5 @@ def delete_recipe():
 main()
 
 #TODO: Empty string input should not update (cancel)
-#TODO: Enable adding multiple instructions
-#TODO: Display new recipe after update
+#TODO:
 #TODO: Enable cancelling search with empty string
