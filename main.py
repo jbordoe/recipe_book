@@ -143,10 +143,10 @@ def display_recipe(recipe):
     recipe_name = recipe['name'].upper()
     print(f'How to cook {recipe_name}')
     print('Ingredients:')
-    for ingredient in recipe['ingredients']:
+    for i, ingredient in enumerate(recipe['ingredients']):
         name = ingredient[0]
         amount = ingredient[1]
-        print(f'  {name}, {amount}')
+        print(f'{i + 1}.  {name}, {amount}')
     print('Instructions:')
     step_n = 1
     for step in recipe['instructions']:
@@ -317,6 +317,6 @@ main()
 # 3. Do 1, 2, and delete to ingredients
 # 4. Deleting Recipes
 
-# The chnaged the position of line 242 (for the del ingredient while updating)
+# The changed the position of line 242 (for the del ingredient while updating)
 # ask: Should the ingredients be numbered to allow users to specify them like we did with the instructions
 # or just ask them to count them selves starting from 1
