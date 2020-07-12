@@ -304,19 +304,9 @@ def delete_recipe():
 
 main()
 
-# TODO: Add Update functionality
-# 1. Add update option to main menu
-# 2. IF user decides to update, they can search for a recipe
-# 3. Upon selecting a recipe the recipe is displayed to them
-# 4. User decides if they want to add, or update something in the recipe
-# 5. We add or update based on the user input
-
-# TODO
-# 1. Add an instruction(user should be able to type an instruction and update on their preferred position in the instruction list)
-# 2. Edit an instruction(same number of instruction but individual instructions can be edited)
-# 3. Do 1, 2, and delete to ingredients
-# 4. Deleting Recipes
-
-# The changed the position of line 242 (for the del ingredient while updating)
-# ask: Should the ingredients be numbered to allow users to specify them like we did with the instructions
-# or just ask them to count them selves starting from 1
+#TODO: Empty string input should not update (cancel)
+#TODO: Empty input for number breaks
+#TODO: Enable adding multiple ingredients
+#TODO: Enable adding multiple instructions
+#TODO: Display new recipe after update
+#TODO: Enable cancelling search with empty string
