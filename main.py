@@ -222,7 +222,7 @@ def update_recipe_instructions():
         elif user_input == 2:
             print('Enter the number of the instruction you want to edit:\n')
             edit_instruction_num = get_number_input(1, len(instructions))
-            edit_instruction = input('Re-enter the instruction here to edit:\n')
+            edit_instruction = get_string('Re-enter the instruction here to edit:\n')
             del instructions[edit_instruction_num - 1]
             instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
@@ -279,10 +279,17 @@ def update_recipe_ingredients():
         elif user_input == 2:
             print('Enter the number of the ingredient you want to edit:\n')
             edit_ingredients_num = get_number_input(1, len(ingredient))
-            del ingredient[edit_ingredients_num - 1]
-            new_ingredients = input('Enter the name of the ingredients:\n')
-            amount_ingredients = input('Enter the amount of ingredient:\n')
+
+            new_ingredients = input('Enter the name of the ingredients:\n').strip()
+            if new_ingredients == '':
+                new_ingredients = ingredient[edit_ingredients_num - 1][0]
+                print('Ingredient name unchanged!')
+            amount_ingredients = input('Enter the amount of ingredient:\n').strip()
+            if amount_ingredients == '':
+                amount_ingredients = ingredient[edit_ingredients_num - 1][1]
+                print('Ingredient amount unchanged!')
             add_amt_ingredient = new_ingredients, amount_ingredients
+            del ingredient[edit_ingredients_num - 1]
             ingredient.append(add_amt_ingredient)
             break
         elif user_input == 3:
@@ -344,5 +351,3 @@ def delete_recipe():
 
 main()
 
-#TODO: Empty string input should not update (cancel)
-#TODO:
