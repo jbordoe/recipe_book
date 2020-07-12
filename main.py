@@ -184,7 +184,22 @@ def create_recipe():
 
     return recipe
 
-
+def add_instructions():
+    global selected_recipe
+    instructions = selected_recipe['instructions']
+    while True:
+        add_instruction = get_string('Enter the instruction and the preferred position of this instruction below:\n')
+        print('Enter the number related to the instruction:\n')
+        position_instruction = get_number_input(1, len(instructions) + 1)
+        instructions.insert(position_instruction - 1, add_instruction)
+        print('Instructions Added')
+        instr_ans = yes_no("""Do you want to add another instruction?
+                                \nPlease input Yes(y) or No(n): """)
+        if not instr_ans:
+            break
+        else:
+            for i, instruction in enumerate(instructions):
+                print(f'{i + 1}. {instruction}\n')
 def update_recipe_instructions():
     global selected_recipe
     while True:
@@ -200,9 +215,7 @@ def update_recipe_instructions():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_instruction = input('Enter the instruction and the preferred position of this instruction below:\n')
-            position_instruction = int(input('Enter the number related to the instruction:\n'))
-            instructions.insert(position_instruction - 1, add_instruction)
+            add_instructions()
             break
         elif user_input == 2:
             print('Enter the number of the instruction you want to edit:\n')
@@ -223,8 +236,8 @@ def add_ingredients():
     global selected_recipe
     ingredients = selected_recipe['ingredients']
     while True:
-        add_ingredient = input('Enter the name of the ingredients:\n')
-        amount_ingredients = input('Enter the amount of ingredient:\n')
+        add_ingredient = get_string('Enter the name of the ingredients:\n')
+        amount_ingredients = get_string('Enter the amount of ingredient:\n')
         add_amt_ingredient = add_ingredient, amount_ingredients
         ingredients.append(add_amt_ingredient)
         print('Added Ingredients')
@@ -232,6 +245,16 @@ def add_ingredients():
                         \nPlease input Yes(y) or No(n): """)
         if not ingre_ans:
             break
+
+def get_string(text):
+    while True:
+        string = input(text).strip()
+        if string == '':
+            print('Please enter a text')
+        else:
+            return string
+
+
 
 def update_recipe_ingredients():
     global selected_recipe
@@ -320,7 +343,6 @@ def delete_recipe():
 main()
 
 #TODO: Empty string input should not update (cancel)
-#TODO: Empty input for number breaks
 #TODO: Enable adding multiple instructions
 #TODO: Display new recipe after update
 #TODO: Enable cancelling search with empty string
