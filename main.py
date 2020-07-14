@@ -81,7 +81,11 @@ def find_recipe():
     global selected_recipe
     global recipes
     while True:
-        query = input('Enter your search term: ')
+        query = input('Enter your search term: ').strip()
+        if query == '':
+            print('Search canceled')
+            break
+
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
         print(f'Found {len(matches)} match(es)!')
@@ -231,7 +235,7 @@ def update_recipe_instructions():
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-            # TODO Handle the case when the instruction is empty
+
 
 
 def add_ingredients():
@@ -315,20 +319,19 @@ def update_recipe():
             else:
                 selected_recipe['name'] = update_name
                 print('The recipe name has been changed')
-
+        ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
+                        \nPlease input Yes(y) or No(n): """)
+        if not ingredient_answer:
+            print(f"Great! The ingredients are  maintained!")
+        else:
+            update_recipe_ingredients()
+        save_recipes(recipes)
         instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not instruction_answer:
             print(f"Great! The instruction are  maintained!")
         else:
             update_recipe_instructions()
-        save_recipes(recipes)
-        ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
-                \nPlease input Yes(y) or No(n): """)
-        if not ingredient_answer:
-            print(f"Great! The ingredients are  maintained!")
-        else:
-            update_recipe_ingredients()
         save_recipes(recipes)
         display_recipe(selected_recipe)
     else:
@@ -351,3 +354,6 @@ def delete_recipe():
 
 main()
 
+#TODO: User should be able to move instructions
+#TODO: Make sure all inputs are being stripped
+#TODO: User should be given the option to search by food name or ingredients
