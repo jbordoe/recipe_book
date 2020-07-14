@@ -81,7 +81,10 @@ def find_recipe():
     global selected_recipe
     global recipes
     while True:
-        query = input('Enter your search term: ')
+        query = input('Enter your search term: ').strip()
+        if query == '':
+            print('Search canceled')
+            break
 
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
@@ -115,7 +118,10 @@ def find_recipe():
 def recipe_search():
     global recipes
     while True:
-        query = input('Enter your search term: ')
+        query = input('Enter your search term: ').strip()
+        if query == '':
+            print('Search canceled')
+            break
 
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
@@ -184,7 +190,22 @@ def create_recipe():
 
     return recipe
 
-
+def add_instructions():
+    global selected_recipe
+    instructions = selected_recipe['instructions']
+    while True:
+        add_instruction = get_string('Enter the instruction and the preferred position of this instruction below:\n')
+        print('Enter the number related to the instruction:\n')
+        position_instruction = get_number_input(1, len(instructions) + 1)
+        instructions.insert(position_instruction - 1, add_instruction)
+        print('Instructions Added')
+        instr_ans = yes_no("""Do you want to add another instruction?
+                                \nPlease input Yes(y) or No(n): """)
+        if not instr_ans:
+            break
+        else:
+            for i, instruction in enumerate(instructions):
+                print(f'{i + 1}. {instruction}\n')
 def update_recipe_instructions():
     global selected_recipe
     while True:
@@ -200,14 +221,12 @@ def update_recipe_instructions():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_instruction = input('Enter the instruction and the preferred position of this instruction below:\n')
-            position_instruction = int(input('Enter the number related to the instruction:\n'))
-            instructions.insert(position_instruction - 1, add_instruction)
+            add_instructions()
             break
         elif user_input == 2:
             print('Enter the number of the instruction you want to edit:\n')
             edit_instruction_num = get_number_input(1, len(instructions))
-            edit_instruction = input('Re-enter the instruction here to edit:\n')
+            edit_instruction = get_string('Re-enter the instruction here to edit:\n')
             del instructions[edit_instruction_num - 1]
             instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
@@ -216,7 +235,31 @@ def update_recipe_instructions():
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-            # TODO Handle the case when the instruction is empty
+
+
+
+def add_ingredients():
+    global selected_recipe
+    ingredients = selected_recipe['ingredients']
+    while True:
+        add_ingredient = get_string('Enter the name of the ingredients:\n')
+        amount_ingredients = get_string('Enter the amount of ingredient:\n')
+        add_amt_ingredient = add_ingredient, amount_ingredients
+        ingredients.append(add_amt_ingredient)
+        print('Added Ingredients')
+        ingre_ans = yes_no("""Do you want to add another ingredient?
+                        \nPlease input Yes(y) or No(n): """)
+        if not ingre_ans:
+            break
+
+def get_string(text):
+    while True:
+        string = input(text).strip()
+        if string == '':
+            print('Please enter a text')
+        else:
+            return string
+
 
 
 def update_recipe_ingredients():
@@ -235,25 +278,29 @@ def update_recipe_ingredients():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_ingredients = input('Enter the name of the ingredients:\n')
-            amount_ingredients = input('Enter the amount of ingredient:\n')
-            add_amt_ingredient = add_ingredients, amount_ingredients
-            ingredient.append(add_amt_ingredient)
+            add_ingredients()
             break
         elif user_input == 2:
             print('Enter the number of the ingredient you want to edit:\n')
             edit_ingredients_num = get_number_input(1, len(ingredient))
+
+            new_ingredients = input('Enter the name of the ingredients:\n').strip()
+            if new_ingredients == '':
+                new_ingredients = ingredient[edit_ingredients_num - 1][0]
+                print('Ingredient name unchanged!')
+            amount_ingredients = input('Enter the amount of ingredient:\n').strip()
+            if amount_ingredients == '':
+                amount_ingredients = ingredient[edit_ingredients_num - 1][1]
+                print('Ingredient amount unchanged!')
+            add_amt_ingredient = new_ingredients, amount_ingredients
             del ingredient[edit_ingredients_num - 1]
-            add_ingredients = input('Enter the name of the ingredients:\n')
-            amount_ingredients = input('Enter the amount of ingredient:\n')
-            add_amt_ingredient = add_ingredients, amount_ingredients
             ingredient.append(add_amt_ingredient)
             break
         elif user_input == 3:
             print('Enter the number of the ingredient you want to delete:\n')
             del_num = get_number_input(1, len(ingredient))
             del ingredient[del_num - 1]
-            print('ingredients Deleted!')
+            print('Ingredients Deleted!')
 
 
 def update_recipe():
@@ -266,9 +313,19 @@ def update_recipe():
         if not name_answer:
             print(f"Great the food name: {selected_recipe['name']} is maintained!")
         else:
-            update_name = input('Enter a new name for the food you are updating:\n')
-            selected_recipe['name'] = update_name
-
+            update_name = input('Enter a new name for the food you are updating:\n').strip()
+            if update_name == '':
+                print('Great! The name is unchanged')
+            else:
+                selected_recipe['name'] = update_name
+                print('The recipe name has been changed')
+        ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
+                        \nPlease input Yes(y) or No(n): """)
+        if not ingredient_answer:
+            print(f"Great! The ingredients are  maintained!")
+        else:
+            update_recipe_ingredients()
+        save_recipes(recipes)
         instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not instruction_answer:
@@ -276,14 +333,7 @@ def update_recipe():
         else:
             update_recipe_instructions()
         save_recipes(recipes)
-        ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
-                \nPlease input Yes(y) or No(n): """)
-        if not ingredient_answer:
-            print(f"Great! The ingredients are  maintained!")
-        else:
-            update_recipe_ingredients()
-        save_recipes(recipes)
-    # TODO Show the updated recipe (selected_recipe)
+        display_recipe(selected_recipe)
     else:
         print('Returning to Main Menu')
 
@@ -304,19 +354,6 @@ def delete_recipe():
 
 main()
 
-# TODO: Add Update functionality
-# 1. Add update option to main menu
-# 2. IF user decides to update, they can search for a recipe
-# 3. Upon selecting a recipe the recipe is displayed to them
-# 4. User decides if they want to add, or update something in the recipe
-# 5. We add or update based on the user input
-
-# TODO
-# 1. Add an instruction(user should be able to type an instruction and update on their preferred position in the instruction list)
-# 2. Edit an instruction(same number of instruction but individual instructions can be edited)
-# 3. Do 1, 2, and delete to ingredients
-# 4. Deleting Recipes
-
-# The changed the position of line 242 (for the del ingredient while updating)
-# ask: Should the ingredients be numbered to allow users to specify them like we did with the instructions
-# or just ask them to count them selves starting from 1
+#TODO: User should be able to move instructions
+#TODO: Make sure all inputs are being stripped
+#TODO: User should be given the option to search by food name or ingredients
