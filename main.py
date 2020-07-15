@@ -352,7 +352,8 @@ def delete_recipe():
     print('Recipe Deleted!')
 
 
-main()
+if __name__ == '__main__':
+    main()
 
 #TODO: User should be able to move instructions
 #TODO: Make sure all inputs are being stripped
