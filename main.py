@@ -415,5 +415,5 @@ def delete_recipe():
 main()
 
 
-# TODO: Make sure all inputs are being stripped
+
 # TODO: User should be given the option to search by food name or ingredients
