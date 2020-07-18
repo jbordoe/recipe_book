@@ -24,7 +24,11 @@ Please enter your desired option
             print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
-            recipe_search()
+            search_term = get_string('Do you want to search by "food name" or "ingredients"\n').lower()
+            if search_term == 'food name':
+                recipe_search()
+            elif search_term == 'ingredients':
+                recipe_search_ingredients()
         elif user_input == 2:
             new_recipe = create_recipe()
             recipes.append(new_recipe)
@@ -145,6 +149,37 @@ def recipe_search():
             display_recipe(selected_recipe)
 
 
+def recipe_search_ingredients():
+    global recipes
+    global selected_recipe
+    while True:
+        query = input('Enter your search term by ingredient: ').strip()
+        if query == '':
+            print('Search canceled')
+            break
+
+        matches = list(filter(lambda x: query.lower() in x['ingredients'], recipes))
+
+        print(f'Found {len(matches)} match(es)!')
+
+        food_ingredients = list(map(lambda x: x['ingredients'], matches))
+
+        print('0. Return to Main Menu')
+        for i in range(0, len(food_ingredients)):
+            print(f'{i + 1}. {food_ingredients[i]}\n')
+
+        print('Enter a number related to the food (match) you are interested: ')
+        num_input = get_number_input(0, len(matches))
+        if num_input == 0:
+            'Returning to main menu'
+            break
+        else:
+            selected_recipe = matches[num_input - 1]
+
+            print(f'These are the details of your choice:')
+            display_recipe(selected_recipe)
+
+
 def display_recipe(recipe):
     recipe_name = recipe['name'].upper()
     print(f'How to cook {recipe_name}')
@@ -162,17 +197,17 @@ def display_recipe(recipe):
 
 def create_recipe():
     recipe = {}
-    name_food = input('What food do you want to add to the recipe book?\n'.capitalize())
+    name_food = get_string('What food do you want to add to the recipe book?\n'.capitalize())
     recipe['name'] = name_food
 
     ingredients = []
     while True:
-        ingredient_name = input('Please Enter Name of Ingredient, or "done" if you are finished:\n')
+        ingredient_name = get_string('Please Enter Name of Ingredient, or "done" if you are finished:\n')
         if ingredient_name == 'done':
             print(ingredients)
             break
         else:
-            ingredient_amount = input(f'Please Enter Amount of {ingredient_name}:\n')
+            ingredient_amount = get_string(f'Please Enter Amount of {ingredient_name}:\n')
             ingredient = ingredient_name, ingredient_amount
             ingredients.append(ingredient)
             print(f'Added {ingredient_name}, {ingredient_amount}')
@@ -180,7 +215,7 @@ def create_recipe():
 
     instructions = []
     while True:
-        instruction = input(f'Please Enter Instruction {len(instructions) + 1}, or "done" if you are finished:\n')
+        instruction = get_string(f'Please Enter Instruction {len(instructions) + 1}, or "done" if you are finished:\n')
         if instruction == 'done':
             print(instructions)
             break
@@ -189,6 +224,7 @@ def create_recipe():
     recipe['instructions'] = instructions
 
     return recipe
+
 
 def add_instructions():
     global selected_recipe
@@ -206,6 +242,27 @@ def add_instructions():
         else:
             for i, instruction in enumerate(instructions):
                 print(f'{i + 1}. {instruction}\n')
+
+
+def move_instruction():
+    global selected_recipe
+    instructions = selected_recipe['instructions']
+    while True:
+        print('Enter the number of the instruction you want to move/re-arrange:\n')
+        move_instruction_num = get_number_input(1, len(instructions))
+        print('Enter the preferred position (number) you want to move the instruction to:\n')
+        position_instruction_num = get_number_input(1, len(instructions))
+        instructions.insert(position_instruction_num - 1, instructions.pop(move_instruction_num - 1))
+        print('Instruction Moved!')
+        move_instr_ans = yes_no("""Do you want to move another instruction?
+                                                    \nPlease input Yes(y) or No(n): """)
+        if not move_instr_ans:
+            break
+        else:
+            for i, instruction in enumerate(instructions):
+                print(f'{i + 1}. {instruction}\n')
+
+
 def update_recipe_instructions():
     global selected_recipe
     while True:
@@ -214,9 +271,10 @@ def update_recipe_instructions():
     0. Done
     1. Add to existing instructions
     2. Update
-    3. Delete
+    3. Re-arrange instructions
+    4. Delete
         """)
-        user_input = get_number_input(0, 3)
+        user_input = get_number_input(0, 4)
         instructions = selected_recipe['instructions']
         if user_input == 0:
             break
@@ -231,11 +289,13 @@ def update_recipe_instructions():
             instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
         elif user_input == 3:
+            move_instruction()
+            break
+        elif user_input == 4:
             print('Enter the number of the instruction you want to delete:\n')
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-
 
 
 def add_ingredients():
@@ -252,6 +312,7 @@ def add_ingredients():
         if not ingre_ans:
             break
 
+
 def get_string(text):
     while True:
         string = input(text).strip()
@@ -259,7 +320,6 @@ def get_string(text):
             print('Please enter a text')
         else:
             return string
-
 
 
 def update_recipe_ingredients():
@@ -355,6 +415,6 @@ def delete_recipe():
 if __name__ == '__main__':
     main()
 
-#TODO: User should be able to move instructions
-#TODO: Make sure all inputs are being stripped
-#TODO: User should be given the option to search by food name or ingredients
+
+
+# TODO: User should be given the option to search by food name or ingredients
