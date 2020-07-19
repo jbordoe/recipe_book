@@ -157,12 +157,16 @@ def recipe_search_ingredients():
         if query == '':
             print('Search canceled')
             break
-
-        matches = list(filter(lambda x: query.lower() in x['ingredients'], recipes))
+        matches = []
+        for recipe in recipes:
+            for ingredient in recipe['ingredients']:
+                ingredient_name = ingredient[0]
+                if query.lower() in ingredient_name:
+                    matches.append(recipe)
 
         print(f'Found {len(matches)} match(es)!')
 
-        food_ingredients = list(map(lambda x: x['ingredients'], matches))
+        food_ingredients = list(map(lambda x: x['name'], matches))
 
         print('0. Return to Main Menu')
         for i in range(0, len(food_ingredients)):
@@ -416,4 +420,3 @@ main()
 
 
 
-# TODO: User should be given the option to search by food name or ingredients
