@@ -1,5 +1,5 @@
 import unittest
-from input_handler import yes_no, get_number_input
+from input_handler import yes_no, get_number_input, get_string
 from unittest.mock import patch
 
 class InputHandlerTests(unittest.TestCase):
@@ -52,6 +52,11 @@ class InputHandlerTests(unittest.TestCase):
         with patch('builtins.input', side_effect=['1','6','2','5','3']):
             result = get_number_input(2,5)
             self.assertEqual(result, 2)
+
+    def test_get_string(self):
+        with patch('builtins.input', side_effect=['', ' ', ' hello', ' hey']):
+            result = get_string('')
+            self.assertEqual(result, 'hello')
 
 
 if __name__ == '__main__':
