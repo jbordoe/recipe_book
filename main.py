@@ -416,7 +416,8 @@ def delete_recipe():
     print('Recipe Deleted!')
 
 
-main()
+if __name__ == '__main__':
+    main()
 
 
 
