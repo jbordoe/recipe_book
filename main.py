@@ -1,8 +1,7 @@
 import json
 from input_handler import get_string, get_number_input, yes_no
-
-global recipes
-global selected_recipe
+from instructions_handler import add_instructions, move_instruction
+from ingredients_handler import add_ingredients, edit_ingredients
 
 
 def main():
@@ -207,41 +206,6 @@ def create_recipe():
     return recipe
 
 
-def add_instructions():
-    global selected_recipe
-    instructions = selected_recipe['instructions']
-    while True:
-        add_instruction = get_string('Enter the instruction and the preferred position of this instruction below:\n')
-        print('Enter the number related to the instruction:\n')
-        position_instruction = get_number_input(1, len(instructions) + 1)
-        instructions.insert(position_instruction - 1, add_instruction)
-        print('Instructions Added')
-        instr_ans = yes_no("""Do you want to add another instruction?
-                                \nPlease input Yes(y) or No(n): """)
-        if not instr_ans:
-            break
-        else:
-            for i, instruction in enumerate(instructions):
-                print(f'{i + 1}. {instruction}\n')
-
-
-def move_instruction():
-    global selected_recipe
-    instructions = selected_recipe['instructions']
-    while True:
-        print('Enter the number of the instruction you want to move/re-arrange:\n')
-        move_instruction_num = get_number_input(1, len(instructions))
-        print('Enter the preferred position (number) you want to move the instruction to:\n')
-        position_instruction_num = get_number_input(1, len(instructions))
-        instructions.insert(position_instruction_num - 1, instructions.pop(move_instruction_num - 1))
-        print('Instruction Moved!')
-        move_instr_ans = yes_no("""Do you want to move another instruction?
-                                                    \nPlease input Yes(y) or No(n): """)
-        if not move_instr_ans:
-            break
-        else:
-            for i, instruction in enumerate(instructions):
-                print(f'{i + 1}. {instruction}\n')
 
 
 def update_recipe_instructions():
@@ -260,7 +224,7 @@ def update_recipe_instructions():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_instructions()
+            add_instructions(selected_recipe)
             break
         elif user_input == 2:
             print('Enter the number of the instruction you want to edit:\n')
@@ -270,29 +234,13 @@ def update_recipe_instructions():
             instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
         elif user_input == 3:
-            move_instruction()
+            move_instruction(selected_recipe)
             break
         elif user_input == 4:
             print('Enter the number of the instruction you want to delete:\n')
             delete_num = get_number_input(1, len(instructions))
             del instructions[delete_num - 1]
             print('Instruction Deleted!')
-
-
-def add_ingredients():
-    global selected_recipe
-    ingredients = selected_recipe['ingredients']
-    while True:
-        add_ingredient = get_string('Enter the name of the ingredients:\n')
-        amount_ingredients = get_string('Enter the amount of ingredient:\n')
-        add_amt_ingredient = add_ingredient, amount_ingredients
-        ingredients.append(add_amt_ingredient)
-        print('Added Ingredients')
-        ingre_ans = yes_no("""Do you want to add another ingredient?
-                        \nPlease input Yes(y) or No(n): """)
-        if not ingre_ans:
-            break
-
 
 
 
@@ -308,32 +256,19 @@ def update_recipe_ingredients():
     3. Delete
         """)
         user_input = get_number_input(0, 3)
-        ingredient = selected_recipe['ingredients']
+        ingredients = selected_recipe['ingredients']
         if user_input == 0:
             break
         elif user_input == 1:
-            add_ingredients()
+            add_ingredients(selected_recipe)
             break
         elif user_input == 2:
-            print('Enter the number of the ingredient you want to edit:\n')
-            edit_ingredients_num = get_number_input(1, len(ingredient))
-
-            new_ingredients = input('Enter the name of the ingredients:\n').strip()
-            if new_ingredients == '':
-                new_ingredients = ingredient[edit_ingredients_num - 1][0]
-                print('Ingredient name unchanged!')
-            amount_ingredients = input('Enter the amount of ingredient:\n').strip()
-            if amount_ingredients == '':
-                amount_ingredients = ingredient[edit_ingredients_num - 1][1]
-                print('Ingredient amount unchanged!')
-            add_amt_ingredient = new_ingredients, amount_ingredients
-            del ingredient[edit_ingredients_num - 1]
-            ingredient.append(add_amt_ingredient)
+            edit_ingredients(ingredients)
             break
         elif user_input == 3:
             print('Enter the number of the ingredient you want to delete:\n')
-            del_num = get_number_input(1, len(ingredient))
-            del ingredient[del_num - 1]
+            del_num = get_number_input(1, len(ingredients))
+            del ingredients[del_num - 1]
             print('Ingredients Deleted!')
 
 
@@ -389,5 +324,7 @@ def delete_recipe():
 if __name__ == '__main__':
     main()
 
-
-
+#TODO: Search file
+#TODO: combine find_recipe and search_recipe
+#TODO: put edit ingredients in a while loop
+#TODO: replace all updates with edit
