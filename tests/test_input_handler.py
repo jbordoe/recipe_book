@@ -1,5 +1,5 @@
 import unittest
-from main import yes_no, get_number_input
+from input_handler import yes_no, get_number_input
 from unittest.mock import patch
 
 class InputHandlerTests(unittest.TestCase):
