@@ -16,7 +16,7 @@ Please enter your desired option
 0. Exit
 1. Search for a Recipe
 2. Add a New Recipe
-3. Make changes to existing Recipe (Update)
+3. Make changes to existing Recipe (Edit)
 4. Delete Recipe
     """)
         user_input = get_number_input(0, 4)
@@ -34,7 +34,7 @@ Please enter your desired option
             recipes.append(new_recipe)
             save_recipes(recipes)
         elif user_input == 3:
-            update_recipe()
+            edit_recipe()
         elif user_input == 4:
             delete_recipe()
 
@@ -208,14 +208,14 @@ def create_recipe():
 
 
 
-def update_recipe_instructions():
+def edit_recipe_instructions():
     global selected_recipe
     while True:
         print("""
     Please enter your desired option
     0. Done
     1. Add to existing instructions
-    2. Update
+    2. Edit
     3. Re-arrange instructions
     4. Delete
         """)
@@ -244,7 +244,7 @@ def update_recipe_instructions():
 
 
 
-def update_recipe_ingredients():
+def edit_recipe_ingredients():
     global selected_recipe
 
     while True:
@@ -252,7 +252,7 @@ def update_recipe_ingredients():
     Please enter your desired option
     0. Done
     1. Add to existing ingredients
-    2. Update
+    2. Edit
     3. Delete
         """)
         user_input = get_number_input(0, 3)
@@ -272,7 +272,7 @@ def update_recipe_ingredients():
             print('Ingredients Deleted!')
 
 
-def update_recipe():
+def edit_recipe():
     global selected_recipe
     global recipes
     result = find_recipe()
@@ -282,25 +282,25 @@ def update_recipe():
         if not name_answer:
             print(f"Great the food name: {selected_recipe['name']} is maintained!")
         else:
-            update_name = input('Enter a new name for the food you are updating:\n').strip()
-            if update_name == '':
+            edit_name = input('Enter a new name for the food you are updating:\n').strip()
+            if edit_name == '':
                 print('Great! The name is unchanged')
             else:
-                selected_recipe['name'] = update_name
+                selected_recipe['name'] = edit_name
                 print('The recipe name has been changed')
         ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
                         \nPlease input Yes(y) or No(n): """)
         if not ingredient_answer:
             print(f"Great! The ingredients are  maintained!")
         else:
-            update_recipe_ingredients()
+            edit_recipe_ingredients()
         save_recipes(recipes)
         instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not instruction_answer:
             print(f"Great! The instruction are  maintained!")
         else:
-            update_recipe_instructions()
+            edit_recipe_instructions()
         save_recipes(recipes)
         display_recipe(selected_recipe)
     else:
@@ -324,7 +324,8 @@ def delete_recipe():
 if __name__ == '__main__':
     main()
 
-#TODO: Search file
+#TODO: create a search handler for the search functions
 #TODO: combine find_recipe and search_recipe
 #TODO: put edit ingredients in a while loop
 #TODO: replace all updates with edit
+#TODO: write a test for the functions without a test function
