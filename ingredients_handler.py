@@ -16,17 +16,22 @@ def add_ingredients(selected_recipe):
 
 
 def edit_ingredients(ingredients):
-    print('Enter the number of the ingredient you want to edit:\n')
-    edit_ingredients_num = get_number_input(1, len(ingredients))
+    while True:
+        print('Enter the number of the ingredient you want to edit:\n')
+        edit_ingredients_num = get_number_input(1, len(ingredients))
 
-    new_ingredients = input('Enter the name of the ingredients:\n').strip()
-    if new_ingredients == '':
-        new_ingredients = ingredients[edit_ingredients_num - 1][0]
-        print('Ingredient name unchanged!')
-    amount_ingredients = input('Enter the amount of ingredient:\n').strip()
-    if amount_ingredients == '':
-        amount_ingredients = ingredients[edit_ingredients_num - 1][1]
-        print('Ingredient amount unchanged!')
-    add_amt_ingredient = new_ingredients, amount_ingredients
-    del ingredients[edit_ingredients_num - 1]
-    ingredients.append(add_amt_ingredient)
+        new_ingredients = input('Enter the name of the ingredients:\n').strip()
+        if new_ingredients == '':
+            new_ingredients = ingredients[edit_ingredients_num - 1][0]
+            print('Ingredient name unchanged!')
+        amount_ingredients = input('Enter the amount of ingredient:\n').strip()
+        if amount_ingredients == '':
+            amount_ingredients = ingredients[edit_ingredients_num - 1][1]
+            print('Ingredient amount unchanged!')
+        add_amt_ingredient = new_ingredients, amount_ingredients
+        del ingredients[edit_ingredients_num - 1]
+        ingredients.append(add_amt_ingredient)
+        edit_ingre_ans = yes_no("""Do you want to edit another ingredient?
+                                \nPlease input Yes(y) or No(n): """)
+        if not edit_ingre_ans:
+            break

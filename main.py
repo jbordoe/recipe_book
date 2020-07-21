@@ -326,6 +326,4 @@ if __name__ == '__main__':
 
 #TODO: create a search handler for the search functions
 #TODO: combine find_recipe and search_recipe
-#TODO: put edit ingredients in a while loop
-#TODO: replace all updates with edit
 #TODO: write a test for the functions without a test function
