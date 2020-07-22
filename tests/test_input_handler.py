@@ -58,8 +58,10 @@ class InputHandlerTests(unittest.TestCase):
             result = get_string('')
             self.assertEqual(result, 'hello')
 
-
-
+    def test_create_recipe(self):
+        with patch('builtins.input', side_effect=['', ' ', ' hello', ' hey']):
+            result = get_string('')
+            self.assertEqual(result, 'hello')
 
 
 if __name__ == '__main__':

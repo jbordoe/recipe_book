@@ -31,7 +31,7 @@ def edit_ingredients(ingredients):
         add_amt_ingredient = new_ingredients, amount_ingredients
         del ingredients[edit_ingredients_num - 1]
         ingredients.append(add_amt_ingredient)
-        edit_ingre_ans = yes_no("""Do you want to edit another ingredient?
+        edit_ingredient_ans = yes_no("""Do you want to edit another ingredient?
                                 \nPlease input Yes(y) or No(n): """)
-        if not edit_ingre_ans:
+        if not edit_ingredient_ans:
             break
