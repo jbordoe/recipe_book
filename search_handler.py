@@ -28,7 +28,7 @@ def recipe_search(recipes):
         print('Enter a number related to the food (match) you are interested: ')
         num_input = get_number_input(0, len(matches))
         if num_input == 0:
-            'Returning to main menu'
+            print('Returning to main menu')
             return False
         else:
             selected_recipe = matches[num_input - 1]
@@ -50,6 +50,11 @@ def recipe_search_ingredients(recipes):
 
         print(f'Found {len(matches)} match(es)!')
 
+        if len(matches) == 0:
+            if yes_no('Do you want to try a new search? '):
+                continue
+            else:
+                return False
         food_ingredients = list(map(lambda x: x['name'], matches))
 
         print('0. Return to Main Menu')
@@ -59,8 +64,8 @@ def recipe_search_ingredients(recipes):
         print('Enter a number related to the food (match) you are interested: ')
         num_input = get_number_input(0, len(matches))
         if num_input == 0:
-            'Returning to main menu'
-            break
+            print('Returning to main menu')
+            return False
         else:
             selected_recipe = matches[num_input - 1]
             return selected_recipe
