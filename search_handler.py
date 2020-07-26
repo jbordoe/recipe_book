@@ -1,10 +1,8 @@
-from input_handler import get_string, get_number_input, yes_no
+from input_handler import get_number_input, yes_no
 
 
 
-def recipe_search():
-    global selected_recipe
-    global recipes
+def recipe_search(recipes):
     while True:
         query = input('Enter your search term: ').strip()
         if query == '':
@@ -34,15 +32,10 @@ def recipe_search():
             return False
         else:
             selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
-            return True
+            return selected_recipe
 
 
-def recipe_search_ingredients():
-    global recipes
-    global selected_recipe
+def recipe_search_ingredients(recipes):
     while True:
         query = input('Enter your search term by ingredient: ').strip()
         if query == '':
@@ -70,6 +63,4 @@ def recipe_search_ingredients():
             break
         else:
             selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
+            return selected_recipe

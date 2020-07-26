@@ -7,6 +7,7 @@ from search_handler import recipe_search, recipe_search_ingredients
 
 def main():
     global recipes
+    global selected_recipe
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
@@ -25,11 +26,18 @@ Please enter your desired option
             print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
-            search_term = get_string('Do you want to search by "food name" or "ingredients"\n').lower()
-            if search_term == 'food name':
-                recipe_search()
-            elif search_term == 'ingredients':
-                recipe_search_ingredients()
+            print("""
+Please enter your desired option:
+Do you want to search by 
+1. Food Name 
+2. Ingredients\n""")
+            search_term = get_number_input(1, 2)
+            if search_term == 1:
+                selected_recipe = recipe_search(recipes)
+            elif search_term == 2:
+                selected_recipe = recipe_search_ingredients(recipes)
+            if selected_recipe:
+                display_recipe(selected_recipe)
         elif user_input == 2:
             new_recipe = create_recipe()
             recipes.append(new_recipe)
@@ -102,77 +110,6 @@ def create_recipe():
 
     return recipe
 
-def recipe_search():
-    global selected_recipe
-    global recipes
-    while True:
-        query = input('Enter your search term: ').strip()
-        if query == '':
-            print('Search canceled')
-            break
-
-        matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
-
-        print(f'Found {len(matches)} match(es)!')
-
-        if len(matches) == 0:
-            if yes_no('Do you want to try a new search? '):
-                continue
-            else:
-                return False
-
-        names = list(map(lambda x: x['name'], matches))
-
-        print('0. Return to Main Menu')
-        for i in range(0, len(names)):
-            print(f'{i + 1}. {names[i]}\n')
-
-        print('Enter a number related to the food (match) you are interested: ')
-        num_input = get_number_input(0, len(matches))
-        if num_input == 0:
-            'Returning to main menu'
-            return False
-        else:
-            selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
-            return True
-
-
-def recipe_search_ingredients():
-    global recipes
-    global selected_recipe
-    while True:
-        query = input('Enter your search term by ingredient: ').strip()
-        if query == '':
-            print('Search canceled')
-            break
-        matches = []
-        for recipe in recipes:
-            for ingredient in recipe['ingredients']:
-                ingredient_name = ingredient[0]
-                if query.lower() in ingredient_name:
-                    matches.append(recipe)
-
-        print(f'Found {len(matches)} match(es)!')
-
-        food_ingredients = list(map(lambda x: x['name'], matches))
-
-        print('0. Return to Main Menu')
-        for i in range(0, len(food_ingredients)):
-            print(f'{i + 1}. {food_ingredients[i]}\n')
-
-        print('Enter a number related to the food (match) you are interested: ')
-        num_input = get_number_input(0, len(matches))
-        if num_input == 0:
-            'Returning to main menu'
-            break
-        else:
-            selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
 
 
 def edit_recipe_instructions():
@@ -242,8 +179,10 @@ def edit_recipe_ingredients():
 def edit_recipe():
     global selected_recipe
     global recipes
-    result = recipe_search()
-    if result:
+    selected_recipe = recipe_search(recipes)
+    if selected_recipe:
+        print(f'These are the details of your choice:')
+        display_recipe(selected_recipe)
         name_answer = yes_no("""Do you want to make changes to the name of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not name_answer:
@@ -277,19 +216,23 @@ def edit_recipe():
 def delete_recipe():
     global selected_recipe
     global recipes
-    recipe_search()
-    delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
-    \nPlease input Yes(y) or No(n): """)
-    if not delete_answer:
-        print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
+    selected_recipe = recipe_search(recipes)
+    if selected_recipe:
+        print(f'These are the details of your choice:')
+        display_recipe(selected_recipe)
+        delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
+        \nPlease input Yes(y) or No(n): """)
+        if not delete_answer:
+            print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
+        else:
+            recipes.remove(selected_recipe)
+        save_recipes(recipes)
+        print('Recipe Deleted!')
     else:
-        recipes.remove(selected_recipe)
-    save_recipes(recipes)
-    print('Recipe Deleted!')
+        print('Delete Canceled!')
 
 
 if __name__ == '__main__':
     main()
 
-#TODO: create a search handler for the search functions
 #TODO: write a test for the functions without a test function

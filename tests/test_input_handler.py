@@ -59,10 +59,39 @@ class InputHandlerTests(unittest.TestCase):
             self.assertEqual(result, 'hello')
 
     def test_create_recipe(self):
-        with patch('builtins.input', side_effect=['', ' ', ' hello', ' hey']):
+        with patch('builtins.input', side_effect=['', ' ', ' rice  ', 'tomatoes', '2']):
             result = get_string('')
-            self.assertEqual(result, 'hello')
+            self.assertEqual(result, 'rice')
 
+    def test_save_recipes(self):
+
+
+    def test_load_recipes(self):
+
+
+    def test_display_recipe(self):
+
+
+    def test_recipe_search(self):
+
+
+
+    def test_recipe_search_ingredients(self):
+
+
+
+    def test_edit_recipe_instructions(self):
+
+
+    def test_edit_recipe_ingredients(self):
+
+
+
+    def test_edit_recipe(self):
+
+
+
+    def test_delete_recipe(self):
 
 if __name__ == '__main__':
     unittest.main()
