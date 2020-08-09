@@ -6,7 +6,7 @@ def add_ingredients(selected_recipe):
     while True:
         add_ingredient = get_string('Enter the name of the ingredients:\n')
         amount_ingredients = get_string('Enter the amount of ingredient:\n')
-        add_amt_ingredient = add_ingredient, amount_ingredients
+        add_amt_ingredient = [add_ingredient, amount_ingredients]
         ingredients.append(add_amt_ingredient)
         print('Added Ingredients')
         ingre_ans = yes_no("""Do you want to add another ingredient?
@@ -28,7 +28,7 @@ def edit_ingredients(ingredients):
         if amount_ingredients == '':
             amount_ingredients = ingredients[edit_ingredients_num - 1][1]
             print('Ingredient amount unchanged!')
-        add_amt_ingredient = new_ingredients, amount_ingredients
+        add_amt_ingredient = [new_ingredients, amount_ingredients]
         del ingredients[edit_ingredients_num - 1]
         ingredients.append(add_amt_ingredient)
         edit_ingredient_ans = yes_no("""Do you want to edit another ingredient?

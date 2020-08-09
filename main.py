@@ -45,7 +45,7 @@ Do you want to search by
         elif user_input == 3:
             edit_recipe()
         elif user_input == 4:
-            delete_recipe()
+            delete_recipe(recipes)
 
 
 # convert python data structure into JSON string
@@ -93,7 +93,7 @@ def create_recipe():
             break
         else:
             ingredient_amount = get_string(f'Please Enter Amount of {ingredient_name}:\n')
-            ingredient = ingredient_name, ingredient_amount
+            ingredient = [ingredient_name, ingredient_amount]
             ingredients.append(ingredient)
             print(f'Added {ingredient_name}, {ingredient_amount}')
     recipe['ingredients'] = ingredients
@@ -120,7 +120,7 @@ def edit_recipe_instructions():
     0. Done
     1. Add to existing instructions
     2. Edit
-    3. Re-arrange instructions
+    3. Re-arrange instructions (Moving)
     4. Delete
         """)
         user_input = get_number_input(0, 4)
@@ -176,9 +176,8 @@ def edit_recipe_ingredients():
             print('Ingredients Deleted!')
 
 
-def edit_recipe():
+def edit_recipe(recipes):
     global selected_recipe
-    global recipes
     selected_recipe = recipe_search(recipes)
     if selected_recipe:
         print(f'These are the details of your choice:')
@@ -213,10 +212,9 @@ def edit_recipe():
         print('Returning to Main Menu')
 
 
-def delete_recipe():
-    global selected_recipe
-    global recipes
+def delete_recipe(recipes):
     selected_recipe = recipe_search(recipes)
+    print(selected_recipe)
     if selected_recipe:
         print(f'These are the details of your choice:')
         display_recipe(selected_recipe)
@@ -226,13 +224,14 @@ def delete_recipe():
             print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
         else:
             recipes.remove(selected_recipe)
+            print(recipes)
         save_recipes(recipes)
         print('Recipe Deleted!')
     else:
         print('Delete Canceled!')
 
 
+
 if __name__ == '__main__':
     main()
 
-#TODO: write a test for the functions without a test function
