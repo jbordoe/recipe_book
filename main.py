@@ -11,6 +11,9 @@ def main():
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
+    logged_in = user_login()
+
+
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
         print("""
@@ -22,7 +25,10 @@ Please enter your desired option
 4. Delete Recipe
     """)
         user_input = get_number_input(0, 4)
-        if user_input == 0:
+        if not logged_in and user_input > 1:
+            print('Sorry, you do not have access. Only premium users can enjoy this feature.\n')
+
+        elif user_input == 0:
             print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
@@ -49,6 +55,20 @@ Do you want to search by
 
 
 # convert python data structure into JSON string
+
+def user_login():
+    print('You can log in to access premium features')
+    login = yes_no('Do you want to log in?\n')
+    if login:
+        user_name = get_string('Please enter your name:\n')
+        password = get_string('Please enter your password\n')
+        if user_name == 'Ernest' and password == 'Jolof123':
+            print("You've Logged in")
+            return True
+    else:
+        print('You will have limited features\n')
+    return False
+
 
 def save_recipes(recipes):
     json_string = json.dumps(recipes)
