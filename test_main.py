@@ -85,6 +85,5 @@ class MainTestCase(unittest.TestCase):
                                     'instructions': ['prepare the cassava dough', 'prepare the corn dough']},
                  {'name': 'Waakye'}, {'name': 'Rice Balls'}], recipes)
 
-
 if __name__ == '__main__':
     unittest.main()

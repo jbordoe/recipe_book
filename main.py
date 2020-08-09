@@ -43,7 +43,7 @@ Do you want to search by
             recipes.append(new_recipe)
             save_recipes(recipes)
         elif user_input == 3:
-            edit_recipe()
+            edit_recipe(recipes)
         elif user_input == 4:
             delete_recipe(recipes)
 
@@ -52,17 +52,22 @@ Do you want to search by
 
 def save_recipes(recipes):
     json_string = json.dumps(recipes)
-    f = open('recipes.json', 'w')
+    f = open(recipes_filepath(), 'w')
     f.write(json_string)
     f.close()
 
 
 def load_recipes():
-    f = open('recipes.json', 'r')
+    f = open(recipes_filepath(), 'r')
     recipes_string = f.read()
     f.close()
     return json.loads(recipes_string)
 
+def recipes_filepath():
+    if __name__ == '__main__':
+        return 'recipes.json'
+    else:
+        return 'test_recipes.json'
 
 
 def display_recipe(recipe):
