@@ -1,11 +1,13 @@
 import json
-
-global recipes
-global selected_recipe
+from input_handler import get_string, get_number_input, yes_no
+from instructions_handler import add_instructions, move_instruction
+from ingredients_handler import add_ingredients, edit_ingredients
+from search_handler import recipe_search, recipe_search_ingredients
 
 
 def main():
     global recipes
+    global selected_recipe
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
@@ -16,7 +18,7 @@ Please enter your desired option
 0. Exit
 1. Search for a Recipe
 2. Add a New Recipe
-3. Make changes to existing Recipe (Update)
+3. Make changes to existing Recipe (Edit)
 4. Delete Recipe
     """)
         user_input = get_number_input(0, 4)
@@ -24,164 +26,48 @@ Please enter your desired option
             print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
-            search_term = get_string('Do you want to search by "food name" or "ingredients"\n').lower()
-            if search_term == 'food name':
-                recipe_search()
-            elif search_term == 'ingredients':
-                recipe_search_ingredients()
+            print("""
+Please enter your desired option:
+Do you want to search by 
+1. Food Name 
+2. Ingredients\n""")
+            search_term = get_number_input(1, 2)
+            if search_term == 1:
+                selected_recipe = recipe_search(recipes)
+            elif search_term == 2:
+                selected_recipe = recipe_search_ingredients(recipes)
+            if selected_recipe:
+                display_recipe(selected_recipe)
         elif user_input == 2:
             new_recipe = create_recipe()
             recipes.append(new_recipe)
             save_recipes(recipes)
         elif user_input == 3:
-            update_recipe()
+            edit_recipe(recipes)
         elif user_input == 4:
-            delete_recipe()
+            delete_recipe(recipes)
 
 
 # convert python data structure into JSON string
 
 def save_recipes(recipes):
     json_string = json.dumps(recipes)
-    f = open('recipes.json', 'w')
+    f = open(recipes_filepath(), 'w')
     f.write(json_string)
     f.close()
 
 
 def load_recipes():
-    f = open('recipes.json', 'r')
+    f = open(recipes_filepath(), 'r')
     recipes_string = f.read()
     f.close()
     return json.loads(recipes_string)
 
-
-def get_number_input(min, max):
-    while True:
-        user_input = input()
-        try:
-            user_int = int(user_input)
-            if user_int < min or user_int > max:
-                print(f'Please enter a number between {min} and {max}')
-                continue
-            return user_int
-        except ValueError:
-            print('You did not enter a number.')
-
-
-def yes_no(text):
-    name_answer = input(text).lower()
-    yes_or_no = ['y', 'yes', 'no', 'n']
-    while name_answer not in yes_or_no:
-        print('Please input yes(y) or no(n)')
-        name_answer = input('y/n: ').lower()
-        print(name_answer)
-    if name_answer == 'no' or name_answer == 'n':
-        return False
-    elif name_answer == 'yes' or name_answer == 'y':
-        return True
-
-
-def find_recipe():
-    global selected_recipe
-    global recipes
-    while True:
-        query = input('Enter your search term: ').strip()
-        if query == '':
-            print('Search canceled')
-            break
-
-        matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
-
-        print(f'Found {len(matches)} match(es)!')
-
-        if len(matches) == 0:
-            if yes_no('Do you want to try a new search? '):
-                continue
-            else:
-                return False
-
-        names = list(map(lambda x: x['name'], matches))
-
-        print('0. Return to Main Menu')
-        for i, name in enumerate(names):
-            print(f'{i + 1}. {name}\n')
-
-        print('Enter a number related to the food (match) you are interested: ')
-        num_input = get_number_input(0, len(matches))
-        if num_input == 0:
-            'Returning to main menu'
-            return False
-        else:
-            selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
-            return True
-
-
-def recipe_search():
-    global recipes
-    while True:
-        query = input('Enter your search term: ').strip()
-        if query == '':
-            print('Search canceled')
-            break
-
-        matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
-
-        print(f'Found {len(matches)} match(es)!')
-
-        names = list(map(lambda x: x['name'], matches))
-
-        print('0. Return to Main Menu')
-        for i in range(0, len(names)):
-            print(f'{i + 1}. {names[i]}\n')
-
-        print('Enter a number related to the food (match) you are interested: ')
-        num_input = get_number_input(0, len(matches))
-        if num_input == 0:
-            'Returning to main menu'
-            break
-        else:
-            selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
-
-
-def recipe_search_ingredients():
-    global recipes
-    global selected_recipe
-    while True:
-        query = input('Enter your search term by ingredient: ').strip()
-        if query == '':
-            print('Search canceled')
-            break
-        matches = []
-        for recipe in recipes:
-            for ingredient in recipe['ingredients']:
-                ingredient_name = ingredient[0]
-                if query.lower() in ingredient_name:
-                    matches.append(recipe)
-
-        print(f'Found {len(matches)} match(es)!')
-
-        food_ingredients = list(map(lambda x: x['name'], matches))
-
-        print('0. Return to Main Menu')
-        for i in range(0, len(food_ingredients)):
-            print(f'{i + 1}. {food_ingredients[i]}\n')
-
-        print('Enter a number related to the food (match) you are interested: ')
-        num_input = get_number_input(0, len(matches))
-        if num_input == 0:
-            'Returning to main menu'
-            break
-        else:
-            selected_recipe = matches[num_input - 1]
-
-            print(f'These are the details of your choice:')
-            display_recipe(selected_recipe)
+def recipes_filepath():
+    if __name__ == '__main__':
+        return 'recipes.json'
+    else:
+        return 'test_recipes.json'
 
 
 def display_recipe(recipe):
@@ -212,7 +98,7 @@ def create_recipe():
             break
         else:
             ingredient_amount = get_string(f'Please Enter Amount of {ingredient_name}:\n')
-            ingredient = ingredient_name, ingredient_amount
+            ingredient = [ingredient_name, ingredient_amount]
             ingredients.append(ingredient)
             print(f'Added {ingredient_name}, {ingredient_amount}')
     recipe['ingredients'] = ingredients
@@ -230,52 +116,16 @@ def create_recipe():
     return recipe
 
 
-def add_instructions():
-    global selected_recipe
-    instructions = selected_recipe['instructions']
-    while True:
-        add_instruction = get_string('Enter the instruction and the preferred position of this instruction below:\n')
-        print('Enter the number related to the instruction:\n')
-        position_instruction = get_number_input(1, len(instructions) + 1)
-        instructions.insert(position_instruction - 1, add_instruction)
-        print('Instructions Added')
-        instr_ans = yes_no("""Do you want to add another instruction?
-                                \nPlease input Yes(y) or No(n): """)
-        if not instr_ans:
-            break
-        else:
-            for i, instruction in enumerate(instructions):
-                print(f'{i + 1}. {instruction}\n')
 
-
-def move_instruction():
-    global selected_recipe
-    instructions = selected_recipe['instructions']
-    while True:
-        print('Enter the number of the instruction you want to move/re-arrange:\n')
-        move_instruction_num = get_number_input(1, len(instructions))
-        print('Enter the preferred position (number) you want to move the instruction to:\n')
-        position_instruction_num = get_number_input(1, len(instructions))
-        instructions.insert(position_instruction_num - 1, instructions.pop(move_instruction_num - 1))
-        print('Instruction Moved!')
-        move_instr_ans = yes_no("""Do you want to move another instruction?
-                                                    \nPlease input Yes(y) or No(n): """)
-        if not move_instr_ans:
-            break
-        else:
-            for i, instruction in enumerate(instructions):
-                print(f'{i + 1}. {instruction}\n')
-
-
-def update_recipe_instructions():
+def edit_recipe_instructions():
     global selected_recipe
     while True:
         print("""
     Please enter your desired option
     0. Done
     1. Add to existing instructions
-    2. Update
-    3. Re-arrange instructions
+    2. Edit
+    3. Re-arrange instructions (Moving)
     4. Delete
         """)
         user_input = get_number_input(0, 4)
@@ -283,7 +133,7 @@ def update_recipe_instructions():
         if user_input == 0:
             break
         elif user_input == 1:
-            add_instructions()
+            add_instructions(selected_recipe)
             break
         elif user_input == 2:
             print('Enter the number of the instruction you want to edit:\n')
@@ -293,7 +143,7 @@ def update_recipe_instructions():
             instructions.insert(edit_instruction_num - 1, edit_instruction)
             break
         elif user_input == 3:
-            move_instruction()
+            move_instruction(selected_recipe)
             break
         elif user_input == 4:
             print('Enter the number of the instruction you want to delete:\n')
@@ -302,31 +152,8 @@ def update_recipe_instructions():
             print('Instruction Deleted!')
 
 
-def add_ingredients():
-    global selected_recipe
-    ingredients = selected_recipe['ingredients']
-    while True:
-        add_ingredient = get_string('Enter the name of the ingredients:\n')
-        amount_ingredients = get_string('Enter the amount of ingredient:\n')
-        add_amt_ingredient = add_ingredient, amount_ingredients
-        ingredients.append(add_amt_ingredient)
-        print('Added Ingredients')
-        ingre_ans = yes_no("""Do you want to add another ingredient?
-                        \nPlease input Yes(y) or No(n): """)
-        if not ingre_ans:
-            break
 
-
-def get_string(text):
-    while True:
-        string = input(text).strip()
-        if string == '':
-            print('Please enter a text')
-        else:
-            return string
-
-
-def update_recipe_ingredients():
+def edit_recipe_ingredients():
     global selected_recipe
 
     while True:
@@ -334,90 +161,82 @@ def update_recipe_ingredients():
     Please enter your desired option
     0. Done
     1. Add to existing ingredients
-    2. Update
+    2. Edit
     3. Delete
         """)
         user_input = get_number_input(0, 3)
-        ingredient = selected_recipe['ingredients']
+        ingredients = selected_recipe['ingredients']
         if user_input == 0:
             break
         elif user_input == 1:
-            add_ingredients()
+            add_ingredients(selected_recipe)
             break
         elif user_input == 2:
-            print('Enter the number of the ingredient you want to edit:\n')
-            edit_ingredients_num = get_number_input(1, len(ingredient))
-
-            new_ingredients = input('Enter the name of the ingredients:\n').strip()
-            if new_ingredients == '':
-                new_ingredients = ingredient[edit_ingredients_num - 1][0]
-                print('Ingredient name unchanged!')
-            amount_ingredients = input('Enter the amount of ingredient:\n').strip()
-            if amount_ingredients == '':
-                amount_ingredients = ingredient[edit_ingredients_num - 1][1]
-                print('Ingredient amount unchanged!')
-            add_amt_ingredient = new_ingredients, amount_ingredients
-            del ingredient[edit_ingredients_num - 1]
-            ingredient.append(add_amt_ingredient)
+            edit_ingredients(ingredients)
             break
         elif user_input == 3:
             print('Enter the number of the ingredient you want to delete:\n')
-            del_num = get_number_input(1, len(ingredient))
-            del ingredient[del_num - 1]
+            del_num = get_number_input(1, len(ingredients))
+            del ingredients[del_num - 1]
             print('Ingredients Deleted!')
 
 
-def update_recipe():
+def edit_recipe(recipes):
     global selected_recipe
-    global recipes
-    result = find_recipe()
-    if result:
+    selected_recipe = recipe_search(recipes)
+    if selected_recipe:
+        print(f'These are the details of your choice:')
+        display_recipe(selected_recipe)
         name_answer = yes_no("""Do you want to make changes to the name of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not name_answer:
-            print(f"Great the food name: {selected_recipe['name']} is maintained!")
+            print(f"Great! The food name: {selected_recipe['name']} is maintained!")
         else:
-            update_name = input('Enter a new name for the food you are updating:\n').strip()
-            if update_name == '':
+            edit_name = input('Enter a new name for the food you are updating:\n').strip()
+            if edit_name == '':
                 print('Great! The name is unchanged')
             else:
-                selected_recipe['name'] = update_name
+                selected_recipe['name'] = edit_name
                 print('The recipe name has been changed')
         ingredient_answer = yes_no("""Do you want to make changes to the ingredients of the food you selected?
                         \nPlease input Yes(y) or No(n): """)
         if not ingredient_answer:
             print(f"Great! The ingredients are  maintained!")
         else:
-            update_recipe_ingredients()
+            edit_recipe_ingredients()
         save_recipes(recipes)
         instruction_answer = yes_no("""Do you want to make changes to the instructions of the food you selected?
         \nPlease input Yes(y) or No(n): """)
         if not instruction_answer:
-            print(f"Great! The instruction are  maintained!")
+            print(f"Great! The instructions are  maintained!")
         else:
-            update_recipe_instructions()
+            edit_recipe_instructions()
         save_recipes(recipes)
         display_recipe(selected_recipe)
     else:
         print('Returning to Main Menu')
 
 
-def delete_recipe():
-    global selected_recipe
-    global recipes
-    find_recipe()
-    delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
-    \nPlease input Yes(y) or No(n): """)
-    if not delete_answer:
-        print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
+def delete_recipe(recipes):
+    selected_recipe = recipe_search(recipes)
+    print(selected_recipe)
+    if selected_recipe:
+        print(f'These are the details of your choice:')
+        display_recipe(selected_recipe)
+        delete_answer = yes_no("""Are you sure you want to DELETE this recipe?
+        \nPlease input Yes(y) or No(n): """)
+        if not delete_answer:
+            print(f"Great! The recipe for: {selected_recipe['name']} is maintained!")
+        else:
+            recipes.remove(selected_recipe)
+            print(recipes)
+        save_recipes(recipes)
+        print('Recipe Deleted!')
     else:
-        recipes.remove(selected_recipe)
-    save_recipes(recipes)
-    print('Recipe Deleted!')
+        print('Delete Canceled!')
+
 
 
 if __name__ == '__main__':
     main()
-
-
 

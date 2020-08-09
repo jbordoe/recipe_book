@@ -1,5 +1,5 @@
 import unittest
-from main import yes_no, get_number_input
+from input_handler import yes_no, get_number_input, get_string
 from unittest.mock import patch
 
 class InputHandlerTests(unittest.TestCase):
@@ -53,6 +53,38 @@ class InputHandlerTests(unittest.TestCase):
             result = get_number_input(2,5)
             self.assertEqual(result, 2)
 
+    def test_get_string(self):
+        with patch('builtins.input', side_effect=['', ' ', ' hello', ' hey']):
+            result = get_string('')
+            self.assertEqual(result, 'hello')
+
+
+
+    #def test_save_recipes(self):
+
+
+    #def test_load_recipes(self):
+
+
+    #def test_display_recipe(self):
+
+
+
+
+
+
+    #def test_edit_recipe_instructions(self):
+
+
+    #def test_edit_recipe_ingredients(self):
+
+
+
+    #def test_edit_recipe(self):
+
+
+
+    #def test_delete_recipe(self):
 
 if __name__ == '__main__':
     unittest.main()
