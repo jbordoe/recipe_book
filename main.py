@@ -1,5 +1,4 @@
 import json
-import getpass
 from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
 from instructions_handler import add_instructions, move_instruction
@@ -70,7 +69,28 @@ Do you want to search by
             else:
                 logged_in = user_login()
 
-
+try:
+    from msvcrt import getch
+    def getpass(prompt):
+        """Replacement for getpass.getpass() which prints asterisks for each character typed"""
+        print(prompt, end='', flush=True)
+        buf = b''
+        while True:
+            ch = getch()
+            if ch in {b'\n', b'\r', b'\r\n'}:
+                print('')
+                break
+            elif ch == b'\x08': # Backspace
+                buf = buf[:-1]
+                print(f'\r{(len(prompt)+len(buf)+1)*" "}\r{prompt}{"*" * len(buf)}', end='', flush=True)
+            elif ch == b'\x03': # Ctrl+C
+                raise KeyboardInterrupt
+            else:
+                buf += ch
+                print('*', end='', flush=True)
+        return buf.decode(encoding='utf-8')
+except ImportError:
+    from getpass import getpass
 # convert python data structure into JSON string
 
 def user_login():
@@ -78,8 +98,7 @@ def user_login():
     login = yes_no('Do you want to log in?\n')
     if login:
         user_name = get_string('Please enter your name:\n')
-        #TODO: Display **** when typing the password
-        password = getpass.getpass(prompt='Please enter your password')
+        password = getpass(prompt='Please enter your password\n')
         hashes = load_users()
         pwd_context = CryptContext(
             schemes=["pbkdf2_sha256"],
