@@ -1,5 +1,6 @@
 import json
 import getpass
+from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
 from instructions_handler import add_instructions, move_instruction
 from ingredients_handler import add_ingredients, edit_ingredients
@@ -63,13 +64,32 @@ def user_login():
     login = yes_no('Do you want to log in?\n')
     if login:
         user_name = get_string('Please enter your name:\n')
+        #TODO: Display **** when typing the password
         password = getpass.getpass(prompt='Please enter your password')
-        if user_name == 'Ernest' and password == 'Jolof123':
-            print("You're Logged in")
-            return True
+        hashes = load_users()
+        pwd_context = CryptContext(
+            schemes=["pbkdf2_sha256"],
+            default="pbkdf2_sha256",
+            pbkdf2_sha256__default_rounds=30000
+        )
+        if not user_name in hashes:
+            print('Username not found')
+        else:
+            user_hash = hashes[user_name]
+            if pwd_context.verify(password, user_hash):
+                print("You're Logged in")
+                return True
+            else:
+                print('Password incorrect')
     else:
         print('You will have limited features\n')
     return False
+
+def load_users():
+    f = open('users.json', 'r')
+    users_string = f.read()
+    f.close()
+    return json.loads(users_string)
 
 
 def save_recipes(recipes):
