@@ -19,6 +19,10 @@ def main():
 
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
+        if logged_in:
+            print('You are currently Logged In')
+        else:
+            print('You are not Logged In')
         print("""
 Please enter your desired option
 0. Exit
@@ -27,8 +31,12 @@ Please enter your desired option
 3. Make changes to existing Recipe (Edit)
 4. Delete Recipe
     """)
-        user_input = get_number_input(0, 4)
-        if not logged_in and user_input > 1:
+        if logged_in:
+            print('5. Log Out')
+        else:
+            print('5. Log In')
+        user_input = get_number_input(0, 5)
+        if not logged_in and user_input > 1 and user_input != 5:
             print('Sorry, you do not have access. Only premium users can enjoy this feature.\n')
 
         elif user_input == 0:
@@ -55,6 +63,12 @@ Do you want to search by
             edit_recipe(recipes)
         elif user_input == 4:
             delete_recipe(recipes)
+        elif user_input == 5:
+            if logged_in:
+                logged_in = False
+                print('You have been logged out!')
+            else:
+                logged_in = user_login()
 
 
 # convert python data structure into JSON string
