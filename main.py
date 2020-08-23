@@ -1,8 +1,10 @@
 import json
+from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
 from instructions_handler import add_instructions, move_instruction
 from ingredients_handler import add_ingredients, edit_ingredients
 from search_handler import recipe_search, recipe_search_ingredients
+
 
 
 def main():
@@ -11,8 +13,15 @@ def main():
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
+    logged_in = user_login()
+
+
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
+        if logged_in:
+            print('You are currently Logged In')
+        else:
+            print('You are not Logged In')
         print("""
 Please enter your desired option
 0. Exit
@@ -21,8 +30,15 @@ Please enter your desired option
 3. Make changes to existing Recipe (Edit)
 4. Delete Recipe
     """)
-        user_input = get_number_input(0, 4)
-        if user_input == 0:
+        if logged_in:
+            print('5. Log Out')
+        else:
+            print('5. Log In')
+        user_input = get_number_input(0, 5)
+        if not logged_in and user_input > 1 and user_input != 5:
+            print('Sorry, you do not have access. Only premium users can enjoy this feature.\n')
+
+        elif user_input == 0:
             print('Thanks for your time. Bye!')
             break
         elif user_input == 1:
@@ -46,9 +62,68 @@ Do you want to search by
             edit_recipe(recipes)
         elif user_input == 4:
             delete_recipe(recipes)
+        elif user_input == 5:
+            if logged_in:
+                logged_in = False
+                print('You have been logged out!')
+            else:
+                logged_in = user_login()
 
-
+try:
+    from msvcrt import getch
+    def getpass(prompt):
+        """Replacement for getpass.getpass() which prints asterisks for each character typed"""
+        print(prompt, end='', flush=True)
+        buf = b''
+        while True:
+            ch = getch()
+            if ch in {b'\n', b'\r', b'\r\n'}:
+                print('')
+                break
+            elif ch == b'\x08': # Backspace
+                buf = buf[:-1]
+                print(f'\r{(len(prompt)+len(buf)+1)*" "}\r{prompt}{"*" * len(buf)}', end='', flush=True)
+            elif ch == b'\x03': # Ctrl+C
+                raise KeyboardInterrupt
+            else:
+                buf += ch
+                print('*', end='', flush=True)
+        return buf.decode(encoding='utf-8')
+except ImportError:
+    from getpass import getpass
 # convert python data structure into JSON string
+
+def user_login():
+    print('You can log in to access premium features')
+    login = yes_no('Do you want to log in?\n')
+    if login:
+        user_name = get_string('Please enter your name:\n')
+        password = getpass(prompt='Please enter your password\n')
+        hashes = load_users()
+        pwd_context = CryptContext(
+            schemes=["pbkdf2_sha256"],
+            default="pbkdf2_sha256",
+            pbkdf2_sha256__default_rounds=30000
+        )
+        if not user_name in hashes:
+            print('Username not found')
+        else:
+            user_hash = hashes[user_name]
+            if pwd_context.verify(password, user_hash):
+                print("You're Logged in")
+                return True
+            else:
+                print('Password incorrect')
+    else:
+        print('You will have limited features\n')
+    return False
+
+def load_users():
+    f = open('users.json', 'r')
+    users_string = f.read()
+    f.close()
+    return json.loads(users_string)
+
 
 def save_recipes(recipes):
     json_string = json.dumps(recipes)
