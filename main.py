@@ -1,8 +1,10 @@
 import json
+import getpass
 from input_handler import get_string, get_number_input, yes_no
 from instructions_handler import add_instructions, move_instruction
 from ingredients_handler import add_ingredients, edit_ingredients
 from search_handler import recipe_search, recipe_search_ingredients
+
 
 
 def main():
@@ -61,9 +63,9 @@ def user_login():
     login = yes_no('Do you want to log in?\n')
     if login:
         user_name = get_string('Please enter your name:\n')
-        password = get_string('Please enter your password\n')
+        password = getpass.getpass(prompt='Please enter your password')
         if user_name == 'Ernest' and password == 'Jolof123':
-            print("You've Logged in")
+            print("You're Logged in")
             return True
     else:
         print('You will have limited features\n')
