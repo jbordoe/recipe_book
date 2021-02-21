@@ -15,8 +15,12 @@ def main():
 
     logged_in = user_login()
 
-    OPTION_SEARCH = 1 #TODO: Change the search options from 0 and 1 to option exit and search
     OPTION_EXIT = 0
+    OPTION_SEARCH = 1
+    OPTION_ADD = 2
+    OPTION_EDIT  = 3
+    OPTION_DELETE  = 4
+    OPTION_LOGIN = 5
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
         if logged_in:
@@ -55,15 +59,15 @@ Do you want to search by
                 selected_recipe = recipe_search_ingredients(recipes)
             if selected_recipe:
                 display_recipe(selected_recipe)
-        elif user_input == 2:
+        elif user_input == OPTION_ADD:
             new_recipe = create_recipe()
             recipes.append(new_recipe)
             save_recipes(recipes)
-        elif user_input == 3:
+        elif user_input == OPTION_EDIT:
             edit_recipe(recipes)
-        elif user_input == 4:
+        elif user_input == OPTION_DELETE:
             delete_recipe(recipes)
-        elif user_input == 5:
+        elif user_input == OPTION_LOGIN:
             if logged_in:
                 logged_in = False
                 print('You have been logged out!')
