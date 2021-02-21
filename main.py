@@ -3,7 +3,7 @@ from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
 from instructions_handler import add_instructions, move_instruction
 from ingredients_handler import add_ingredients, edit_ingredients
-from search_handler import recipe_search, recipe_search_ingredients
+from search_handler import recipe_search, recipe_search_menu
 
 
 
@@ -47,18 +47,9 @@ Please enter your desired option
             print('Thanks for your time. Bye!')
             break
         elif user_input == OPTION_SEARCH:
-            print("""
-Please enter your desired option:
-Do you want to search by 
-1. Food Name 
-2. Ingredients\n""")
-            search_term = get_number_input(1, 2)
-            if search_term == 1: #TODO: Move a separate function
-                selected_recipe = recipe_search(recipes)
-            elif search_term == 2:
-                selected_recipe = recipe_search_ingredients(recipes)
-            if selected_recipe:
-                display_recipe(selected_recipe)
+            recipe = recipe_search_menu(recipes)
+            if recipe:
+                display_recipe(recipe)
         elif user_input == OPTION_ADD:
             new_recipe = create_recipe()
             recipes.append(new_recipe)

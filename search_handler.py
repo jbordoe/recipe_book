@@ -1,6 +1,19 @@
 from input_handler import get_number_input, yes_no
 
 
+def recipe_search_menu(recipes):
+    print("""
+    Please enter your desired option:
+    Do you want to search by 
+    1. Food Name 
+    2. Ingredients\n""")
+    search_term = get_number_input(1, 2)
+    if search_term == 1:
+        selected_recipe = recipe_search(recipes)
+    elif search_term == 2:
+        selected_recipe = recipe_search_ingredients(recipes)
+    if selected_recipe:
+        return selected_recipe
 
 def recipe_search(recipes):
     while True:
@@ -73,3 +86,5 @@ def recipe_search_ingredients(recipes):
         else:
             selected_recipe = matches[num_input - 1]
             return selected_recipe
+
+
