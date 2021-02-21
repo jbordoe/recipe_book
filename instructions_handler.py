@@ -3,7 +3,7 @@ from input_handler import get_string, get_number_input, yes_no
 
 
 def add_instructions(selected_recipe):
-
+    # TODO: Separate user input and data manipulation functions
     instructions = selected_recipe['instructions']
     while True:
         add_instruction = get_string('Enter the instruction and the preferred position of this instruction below:\n')

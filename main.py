@@ -15,7 +15,8 @@ def main():
 
     logged_in = user_login()
 
-
+    OPTION_SEARCH = 1 #TODO: Change the search options from 0 and 1 to option exit and search
+    OPTION_EXIT = 0
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
         if logged_in:
@@ -38,17 +39,17 @@ Please enter your desired option
         if not logged_in and user_input > 1 and user_input != 5:
             print('Sorry, you do not have access. Only premium users can enjoy this feature.\n')
 
-        elif user_input == 0:
+        elif user_input == OPTION_EXIT:
             print('Thanks for your time. Bye!')
             break
-        elif user_input == 1:
+        elif user_input == OPTION_SEARCH:
             print("""
 Please enter your desired option:
 Do you want to search by 
 1. Food Name 
 2. Ingredients\n""")
             search_term = get_number_input(1, 2)
-            if search_term == 1:
+            if search_term == 1: #TODO: Move a separate function
                 selected_recipe = recipe_search(recipes)
             elif search_term == 2:
                 selected_recipe = recipe_search_ingredients(recipes)

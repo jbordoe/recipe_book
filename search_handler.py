@@ -10,6 +10,9 @@ def recipe_search(recipes):
             break
 
         matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
+        #TODO: Move the matches to a separate function
+
+
 
         print(f'Found {len(matches)} match(es)!')
 
@@ -41,6 +44,7 @@ def recipe_search_ingredients(recipes):
         if query == '':
             print('Search canceled')
             break
+        # TODO: Move the matches to a separate function
         matches = []
         for recipe in recipes:
             for ingredient in recipe['ingredients']:
