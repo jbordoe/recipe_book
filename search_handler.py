@@ -21,12 +21,7 @@ def recipe_search(recipes):
         if query == '':
             print('Search canceled')
             break
-
-        matches = list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
-        #TODO: Move the matches to a separate function
-
-
-
+        matches = find_recipe_by_name(recipes, query)
         print(f'Found {len(matches)} match(es)!')
 
         if len(matches) == 0:
@@ -50,6 +45,8 @@ def recipe_search(recipes):
             selected_recipe = matches[num_input - 1]
             return selected_recipe
 
+def find_recipe_by_name(recipes, query):
+    return list(filter(lambda x: query.lower() in x['name'].lower(), recipes))
 
 def recipe_search_ingredients(recipes):
     while True:
