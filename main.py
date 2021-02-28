@@ -186,7 +186,7 @@ def create_recipe():
 
     return recipe
 
-
+#TODO: Move edit instrcution to the it's handler
 
 def edit_recipe_instructions():
     global selected_recipe

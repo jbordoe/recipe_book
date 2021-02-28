@@ -14,4 +14,13 @@ class Recipe:
         add_amt_ingredient = [name, amount]
         del self.ingredients[number - 1]
         self.ingredients.append(add_amt_ingredient)
-#TODO: create a test of edit ingredient (if you don edit name it keeps the name, just like the amount)
+#TODO: create a test of edit ingredient (if you don't edit name it keeps the name, just like the amount)
+
+    def add_instruction(self, position, text):
+        self.instructions.insert(position - 1, text)
+
+    def move_instruction(self, old_position, new_position):
+        ...
+
+    def edit_instruction(self, position, text):
+        ...
