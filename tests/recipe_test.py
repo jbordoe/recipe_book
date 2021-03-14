@@ -15,24 +15,22 @@ class RecipeTest(unittest.TestCase):
         my_recipe.add_ingredient('pepper', '4')
         self.assertEqual(my_recipe.ingredients, [['chicken', '100g'], ['pepper', '4']])
 
-    def test_edit_ingredient(self): #editing the name of ingredient only
+    def test_edit_ingredient(self):  # editing the both name and amount of ingredient only
         my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g']], ["blah blah"])
-        my_recipe.edit_ingredient(1, 'bread', '100g')
-        self.assertEqual(my_recipe.ingredients, [['bread', '100g']])
-#TODO: Add test case with Optional parameters
-        #editing the amount of ingredient only
-        my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g']], ["blah blah"])
-        my_recipe.edit_ingredient(1, 'chicken', '20g')
-        self.assertEqual(my_recipe.ingredients, [['chicken', '20g']])
+        my_recipe.edit_ingredient(1, name='bread', amount='25g')
+        self.assertEqual(my_recipe.ingredients, [['bread', '25g']])
 
-        #editing the ingredient name of a multiple list
+
+        # editing the name of ingredient only
+        my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g']], ["blah blah"])
+        my_recipe.edit_ingredient(1, name='pepper')
+        self.assertEqual(my_recipe.ingredients, [['pepper', '100g']])
+
+        # editing the amount of the ingredient
         my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g'], ['tomatoes', '5g']], ["blah blah"])
-        my_recipe.edit_ingredient(2, 'onions', '5g')
-        self.assertEqual(my_recipe.ingredients, [['chicken', '100g'], ['onions', '5g']])
+        my_recipe.edit_ingredient(2, amount='30g')
+        self.assertEqual(my_recipe.ingredients, [['chicken', '100g'], ['tomatoes', '30g']])
 
-        '''my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g']], ["blah blah"])
-        my_recipe.edit_ingredient(1, 'bread', '50g')
-        self.assertEqual(my_recipe.ingredients, [['bread', '50g']])'''
 
     def test_add_instruction(self):
         my_recipe = Recipe('Chicken Sandwich', [], [])
@@ -70,10 +68,7 @@ class RecipeTest(unittest.TestCase):
         self.assertEqual(my_recipe.instructions, ['a', 'j', 'c'])
 
 
-
-
-#TODO: throw an error if the old positon is too large ot too small
-
+# TODO: throw an error if the old position is too large or too small
 
 
 if __name__ == '__main__':
