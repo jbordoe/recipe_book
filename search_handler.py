@@ -54,7 +54,6 @@ def recipe_search_ingredients(recipes):
         if query == '':
             print('Search canceled')
             break
-        # TODO: Move the matches to a separate function
         matches = []
         for recipe in recipes:
             for ingredient in recipe['ingredients']:

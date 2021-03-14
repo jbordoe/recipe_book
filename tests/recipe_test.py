@@ -31,6 +31,15 @@ class RecipeTest(unittest.TestCase):
         my_recipe.edit_ingredient(2, amount='30g')
         self.assertEqual(my_recipe.ingredients, [['chicken', '100g'], ['tomatoes', '30g']])
 
+    def test_delete_ingredient(self):
+        my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g']], ["blah blah"])
+        my_recipe.delete_ingredient(1)
+        self.assertEqual(my_recipe.ingredients, [])
+
+        my_recipe = Recipe('Chicken Sandwich', [['chicken', '100g'], ['tomatoes', '30g'], ['salt', '5g']], ["blah blah"])
+        my_recipe.delete_ingredient(2)
+        self.assertEqual(my_recipe.ingredients, [['chicken', '100g'], ['salt', '5g']])
+
 
     def test_add_instruction(self):
         my_recipe = Recipe('Chicken Sandwich', [], [])
@@ -59,16 +68,21 @@ class RecipeTest(unittest.TestCase):
         self.assertEqual(my_recipe.instructions, ['a', 'b', 'c'])
 
         my_recipe = Recipe('Chicken Sandwich', [], ['a', 'b', 'c'])
-        my_recipe.move_instruction(1, 10)
-        self.assertEqual(my_recipe.instructions, ['b', 'c', 'a'])
+        self.assertRaises(Exception, my_recipe.move_instruction, 1, 10)
+
+        my_recipe = Recipe('Chicken Sandwich', [], ['a', 'b', 'c'])
+        self.assertRaises(Exception, my_recipe.move_instruction, 15, 2)
 
     def test_edit_instruction(self):
         my_recipe = Recipe('Chicken Sandwich', [], ['a', 'b', 'c'])
         my_recipe.edit_instruction(2, 'j')
         self.assertEqual(my_recipe.instructions, ['a', 'j', 'c'])
 
+    def test_delete_instruction(self):
+        my_recipe = Recipe('Chicken Sandwich', [], ['a', 'b', 'c'])
+        my_recipe.delete_instruction(3)
+        self.assertEqual(my_recipe.instructions, ['a', 'b'])
 
-# TODO: throw an error if the old position is too large or too small
 
 
 if __name__ == '__main__':

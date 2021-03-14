@@ -1,7 +1,7 @@
 import json
 from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
-from instructions_handler import add_instructions, move_instruction
+from instructions_handler import add_instructions, move_instruction, edit_recipe_instructions
 from ingredients_handler import add_ingredients, edit_ingredients
 from search_handler import recipe_search, recipe_search_menu
 
@@ -185,44 +185,6 @@ def create_recipe():
     recipe['instructions'] = instructions
 
     return recipe
-
-#TODO: Move edit instrcution to the it's handler
-
-def edit_recipe_instructions():
-    global selected_recipe
-    while True:
-        print("""
-    Please enter your desired option
-    0. Done
-    1. Add to existing instructions
-    2. Edit
-    3. Re-arrange instructions (Moving)
-    4. Delete
-        """)
-        user_input = get_number_input(0, 4)
-        instructions = selected_recipe['instructions']
-        if user_input == 0:
-            break
-        elif user_input == 1:
-            add_instructions(selected_recipe)
-            break
-        elif user_input == 2:
-            print('Enter the number of the instruction you want to edit:\n')
-            edit_instruction_num = get_number_input(1, len(instructions))
-            edit_instruction = get_string('Re-enter the instruction here to edit:\n')
-            del instructions[edit_instruction_num - 1]
-            instructions.insert(edit_instruction_num - 1, edit_instruction)
-            break
-        elif user_input == 3:
-            move_instruction(selected_recipe)
-            break
-        elif user_input == 4:
-            print('Enter the number of the instruction you want to delete:\n')
-            delete_num = get_number_input(1, len(instructions))
-            del instructions[delete_num - 1]
-            print('Instruction Deleted!')
-
-
 
 def edit_recipe_ingredients():
     global selected_recipe
