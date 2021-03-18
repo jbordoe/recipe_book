@@ -13,7 +13,7 @@ def add_ingredients(selected_recipe):
                         \nPlease input Yes(y) or No(n): """)
         if not ingre_ans:
             break
-
+#TODO: Separate user input and data manipulation functions
 
 def edit_ingredients(ingredients):
     while True:

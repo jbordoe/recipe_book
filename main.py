@@ -1,8 +1,10 @@
 import json
+from passlib.context import CryptContext
 from input_handler import get_string, get_number_input, yes_no
-from instructions_handler import add_instructions, move_instruction
+from instructions_handler import add_instructions, move_instruction, edit_recipe_instructions
 from ingredients_handler import add_ingredients, edit_ingredients
-from search_handler import recipe_search, recipe_search_ingredients
+from search_handler import recipe_search, recipe_search_menu
+
 
 
 def main():
@@ -11,8 +13,20 @@ def main():
     recipes = load_recipes()
     print('WELCOME TO YOUR RECIPE BOOK!')
 
+    logged_in = user_login()
+
+    OPTION_EXIT = 0
+    OPTION_SEARCH = 1
+    OPTION_ADD = 2
+    OPTION_EDIT  = 3
+    OPTION_DELETE  = 4
+    OPTION_LOGIN = 5
     while True:
         print(f'There Are Currently {len(recipes)} recipes')
+        if logged_in:
+            print('You are currently Logged In')
+        else:
+            print('You are not Logged In')
         print("""
 Please enter your desired option
 0. Exit
@@ -21,34 +35,91 @@ Please enter your desired option
 3. Make changes to existing Recipe (Edit)
 4. Delete Recipe
     """)
-        user_input = get_number_input(0, 4)
-        if user_input == 0:
+        if logged_in:
+            print('5. Log Out')
+        else:
+            print('5. Log In')
+        user_input = get_number_input(0, 5)
+        if not logged_in and user_input > 1 and user_input != 5:
+            print('Sorry, you do not have access. Only premium users can enjoy this feature.\n')
+
+        elif user_input == OPTION_EXIT:
             print('Thanks for your time. Bye!')
             break
-        elif user_input == 1:
-            print("""
-Please enter your desired option:
-Do you want to search by 
-1. Food Name 
-2. Ingredients\n""")
-            search_term = get_number_input(1, 2)
-            if search_term == 1:
-                selected_recipe = recipe_search(recipes)
-            elif search_term == 2:
-                selected_recipe = recipe_search_ingredients(recipes)
-            if selected_recipe:
-                display_recipe(selected_recipe)
-        elif user_input == 2:
+        elif user_input == OPTION_SEARCH:
+            recipe = recipe_search_menu(recipes)
+            if recipe:
+                display_recipe(recipe)
+        elif user_input == OPTION_ADD:
             new_recipe = create_recipe()
             recipes.append(new_recipe)
             save_recipes(recipes)
-        elif user_input == 3:
+        elif user_input == OPTION_EDIT:
             edit_recipe(recipes)
-        elif user_input == 4:
+        elif user_input == OPTION_DELETE:
             delete_recipe(recipes)
+        elif user_input == OPTION_LOGIN:
+            if logged_in:
+                logged_in = False
+                print('You have been logged out!')
+            else:
+                logged_in = user_login()
 
-
+try:
+    from msvcrt import getch
+    def getpass(prompt):
+        """Replacement for getpass.getpass() which prints asterisks for each character typed"""
+        print(prompt, end='', flush=True)
+        buf = b''
+        while True:
+            ch = getch()
+            if ch in {b'\n', b'\r', b'\r\n'}:
+                print('')
+                break
+            elif ch == b'\x08': # Backspace
+                buf = buf[:-1]
+                print(f'\r{(len(prompt)+len(buf)+1)*" "}\r{prompt}{"*" * len(buf)}', end='', flush=True)
+            elif ch == b'\x03': # Ctrl+C
+                raise KeyboardInterrupt
+            else:
+                buf += ch
+                print('*', end='', flush=True)
+        return buf.decode(encoding='utf-8')
+except ImportError:
+    from getpass import getpass
 # convert python data structure into JSON string
+
+def user_login():
+    print('You can log in to access premium features')
+    login = yes_no('Do you want to log in?\n')
+    if login:
+        user_name = get_string('Please enter your name:\n')
+        password = getpass(prompt='Please enter your password\n')
+        hashes = load_users()
+        pwd_context = CryptContext(
+            schemes=["pbkdf2_sha256"],
+            default="pbkdf2_sha256",
+            pbkdf2_sha256__default_rounds=30000
+        )
+        if not user_name in hashes:
+            print('Username not found')
+        else:
+            user_hash = hashes[user_name]
+            if pwd_context.verify(password, user_hash):
+                print("You're Logged in")
+                return True
+            else:
+                print('Password incorrect')
+    else:
+        print('You will have limited features\n')
+    return False
+
+def load_users():
+    f = open('users.json', 'r')
+    users_string = f.read()
+    f.close()
+    return json.loads(users_string)
+
 
 def save_recipes(recipes):
     json_string = json.dumps(recipes)
@@ -114,44 +185,6 @@ def create_recipe():
     recipe['instructions'] = instructions
 
     return recipe
-
-
-
-def edit_recipe_instructions():
-    global selected_recipe
-    while True:
-        print("""
-    Please enter your desired option
-    0. Done
-    1. Add to existing instructions
-    2. Edit
-    3. Re-arrange instructions (Moving)
-    4. Delete
-        """)
-        user_input = get_number_input(0, 4)
-        instructions = selected_recipe['instructions']
-        if user_input == 0:
-            break
-        elif user_input == 1:
-            add_instructions(selected_recipe)
-            break
-        elif user_input == 2:
-            print('Enter the number of the instruction you want to edit:\n')
-            edit_instruction_num = get_number_input(1, len(instructions))
-            edit_instruction = get_string('Re-enter the instruction here to edit:\n')
-            del instructions[edit_instruction_num - 1]
-            instructions.insert(edit_instruction_num - 1, edit_instruction)
-            break
-        elif user_input == 3:
-            move_instruction(selected_recipe)
-            break
-        elif user_input == 4:
-            print('Enter the number of the instruction you want to delete:\n')
-            delete_num = get_number_input(1, len(instructions))
-            del instructions[delete_num - 1]
-            print('Instruction Deleted!')
-
-
 
 def edit_recipe_ingredients():
     global selected_recipe
